@@ -9,7 +9,7 @@
 To clone this repository run:
 
 ```
-git clone https://github.com/LeapimusMaximus/Matchify-FE
+git clone https://github.com/LeapimusMaximus/Matchify-FE.git
 ```
 
 ## npm packages
