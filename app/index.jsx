@@ -1,11 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
+import * as AuthSession from "expo-auth-session";
+
 
 const Home = () => {
+  const redirectUri = AuthSession.makeRedirectUri({
+  useProxy: true,
+});
+console.log("here", redirectUri);
   return (
     <View style={styles.container}>
-      <Text>Home</Text>
+      <Text>{redirectUri}</Text>
     </View>
   );
 };
