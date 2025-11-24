@@ -5,10 +5,6 @@ const Messages = () => {
   return (
     <View style={styles.container}>
       <Text>Messages</Text>
-
-      <Link href="/" style={styles.link}>
-        <Text>Home</Text>
-      </Link>
     </View>
   );
 };

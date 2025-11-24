@@ -5,10 +5,6 @@ const Feed = () => {
   return (
     <View style={styles.container}>
       <Text>Feed</Text>
-
-      <Link href="/" style={styles.link}>
-        <Text>Home</Text>
-      </Link>
     </View>
   );
 };

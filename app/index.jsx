@@ -6,22 +6,6 @@ const Home = () => {
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-
-      <Link href="/login" style={styles.link}>
-        <Text>Login</Text>
-      </Link>
-      <Link href="/feed" style={styles.link}>
-        <Text>Feed</Text>
-      </Link>
-      <Link href="/matches" style={styles.link}>
-        <Text>Matches</Text>
-      </Link>
-      <Link href="/messages" style={styles.link}>
-        <Text>Messages</Text>
-      </Link>
-      <Link href="/profile" style={styles.link}>
-        <Text>Profile</Text>
-      </Link>
     </View>
   );
 };

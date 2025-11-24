@@ -5,10 +5,6 @@ const Matches = () => {
   return (
     <View style={styles.container}>
       <Text>Matches</Text>
-
-      <Link href="/" style={styles.link}>
-        <Text>Home</Text>
-      </Link>
     </View>
   );
 };

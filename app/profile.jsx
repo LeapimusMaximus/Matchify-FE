@@ -5,10 +5,6 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Text>Profile</Text>
-
-      <Link href="/" style={styles.link}>
-        <Text>Home</Text>
-      </Link>
     </View>
   );
 };
