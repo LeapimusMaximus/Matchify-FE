@@ -1,4 +1,4 @@
-# Getting Started
+# Matchify-FE
 
 ## Prerequisites
 
