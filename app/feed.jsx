@@ -1,20 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Text, View, StyleSheet } from "react-native";
 import { Link } from "expo-router";
 
-const Home = () => {
+
+const Feed = () => {
   return (
     <View style={styles.container}>
       <Text>Home</Text>
 
-      <Link href="/feed" style={styles.link}>
-        <Text>Feed</Text>
+      <Link href="/" style={styles.link}>
+        <Text>Home</Text>
       </Link>
     </View>
   );
 };
 
-export default Home;
+export default Feed;
 
 const styles = StyleSheet.create({
     container: {
