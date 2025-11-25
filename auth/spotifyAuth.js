@@ -48,6 +48,8 @@ export async function refreshAccessToken() {
     }).toString(),
   });
 
+  console.log(response);
+
   const tokens = await response.json();
   if (tokens.error) {
     console.error("Refresh token error:", tokens);
@@ -75,6 +77,7 @@ export async function logout() {
 export async function login() {
   const redirectUri = AuthSession.makeRedirectUri({
     scheme: "matchify", 
+    useProxy: true,
   });
 
   const request = new AuthSession.AuthRequest({
@@ -95,7 +98,7 @@ export async function login() {
 
   const tokenResponse = await fetch(discovery.tokenEndpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json", },
     body: new URLSearchParams({
       client_id: clientId,
       grant_type: "authorization_code",
@@ -105,7 +108,14 @@ export async function login() {
     }).toString(),
   });
 
-  const tokens = await tokenResponse.json();
+  const text = await tokenResponse.text();
+  let tokens;
+  try {
+    tokens = JSON.parse(text);
+  } catch (err) {
+    console.error("Token response is not JSON:", text);
+    throw new Error("Failed to parse token response from Spotify");
+  }
 
   if (tokens.error) {
     throw new Error(tokens.error_description || "Token exchange failed");
