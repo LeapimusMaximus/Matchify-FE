@@ -1,79 +1,81 @@
 import React, { useState, useEffect } from "react";
 import { Button, Text, View, Image } from "react-native";
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
-import * as AuthSession from "expo-auth-session";
 
 export default function Home() {
   const [user, setUser] = useState(null);
-  const [songs, setSongs] = useState([]);
+  const [songs, setSongs] = useState(null);
   const [token, setToken] = useState(null);
 
-  useEffect( () => {
-    async function getNewToken() {
-      const newToken = await getValidAccessToken();
-      setToken(newToken)
-    }
-    getNewToken();
-    }, []);
+  useEffect(() => {
+    (async () => {
+      const t = await getValidAccessToken();
+      setToken(t);
+    })();
+  }, []);
 
-  async function fetchProfile() {
+  useEffect(() => {
     if (!token) return;
 
-    const res = await fetch("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    (async () => {
+      const res = await fetch("https://api.spotify.com/v1/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(await res.json());
+    })();
+  }, [token]);
 
-    setUser(await res.json());
+  useEffect(() => {
+    if (!token) return;
+
+    (async () => {
+      const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSongs(await res.json());
+    })();
+  }, [token]);
+
+  async function handleLogin() {
+    await login();               
+    const newToken = await getValidAccessToken(); 
+    setToken(newToken);          
   }
-
-  useEffect( () => {
-    async function getTopTracks() {
-      if (token) {
-        const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setSongs(await res.json());
-      }
-    }
-    getTopTracks()
-  }, []);
 
   return (
     <View style={{ marginTop: 80, padding: 20 }}>
       {!user && (
-        <Button
-          title="Login with Spotify"
-          onPress={async () => {
-            try {
-              await login();
-              await fetchProfile();
-            } catch (err) {
-              console.error(err);
-            }
-          }}
-        />
+        <Button title="Login with Spotify" onPress={handleLogin} />
       )}
 
-      {user && (
+      {user && songs && (
         <>
           <Text style={{ fontSize: 22, marginBottom: 10 }}>
             Logged in as {user.display_name}
           </Text>
-          <Image
-            source={{ uri: user.images[0].url }}
-            style={{ width: 150, height: 150 }}
-          />
-          {/* <Button title="Refresh Profile" onPress={fetchProfile} /> */}
-          <Text>{songs.items[0].name}</Text>
-          <Text>{songs.items[1].name}</Text>
-          <Text>{songs.items[2].name}</Text>
-          <Text>{songs.items[3].name}</Text>
-          <Text>{songs.items[4].name}</Text>
+
+          {user.images?.[0]?.url && (
+            <Image
+              source={{ uri: user.images[0].url }}
+              style={{ width: 150, height: 150 }}
+            />
+          )}
+
+          <Text style={{ marginTop: 20, fontWeight: "bold" }}>
+            Top Tracks:
+          </Text>
+
+          {songs.items?.slice(0, 5).map((track, i) => (
+            <Text key={i}>{track.name}</Text>
+          ))}
+
           <Button
             title="Logout"
             onPress={async () => {
               await logout();
               setUser(null);
+              setSongs(null);
+              setToken(null);
             }}
           />
         </>
