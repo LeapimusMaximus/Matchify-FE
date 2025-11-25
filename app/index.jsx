@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Text, View, Image, Pressable } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
+import Spacer from "../components/Spacer";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -52,8 +53,10 @@ export default function Home() {
       {user && songs && (
         <>
           <Text style={{ fontSize: 22, marginBottom: 10 }}>
-            Logged in as {user.display_name}
+            Hi, {user.display_name}!
           </Text>
+
+          <Spacer height={20}/>
 
           {user.images?.[0]?.url && (
             <Image
@@ -62,11 +65,15 @@ export default function Home() {
             />
           )}
 
+          <Spacer height={20}/>
+
           <Text style={{ marginTop: 20, fontWeight: "bold" }}>Top Tracks:</Text>
 
           {songs.items?.slice(0, 5).map((track, i) => (
             <Text key={i}>{track.name}</Text>
           ))}
+
+          <Spacer />
 
           <Pressable
             onPress={() => navigation.navigate("Feed")}
@@ -74,6 +81,7 @@ export default function Home() {
           >
             <Text style={{ color: "white" }}>Find Matches Now!</Text>
           </Pressable>
+          <Spacer height={100}/>
 
           <Button
             title="Logout"
