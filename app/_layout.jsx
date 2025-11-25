@@ -17,7 +17,6 @@ const Tab = createBottomTabNavigator();
 const RootLayout = () => {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
-  console.log(theme);
 
   return (
     <>
