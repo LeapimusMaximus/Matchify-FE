@@ -85,7 +85,7 @@ export async function login() {
     redirectUri,
     usePKCE: true,
     responseType: AuthSession.ResponseType.Code,
-    scopes: ["user-read-email", "user-read-private"],
+    scopes: ["user-read-email", "user-read-private", "user-top-read"],
   });
 
   const result = await request.promptAsync(discovery);
