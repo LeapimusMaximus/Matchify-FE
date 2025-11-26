@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme, Image, Text, View } from "react-native";
+import { StyleSheet, useColorScheme, Image, Platform, View } from "react-native";
 import { Colors } from "../constants/Colors";
 import {
   NavigationContainer,
@@ -46,7 +46,8 @@ const RootLayout = () => {
                 tabBarStyle: {
                 backgroundColor: "#d3e7ed",
                 borderTopWidth: 0,
-                height: 70,
+                height: 70 + (Platform.OS === "ios" ? 20 : 0),
+                paddingBottom: Platform.OS === "ios" ? 20 : 10,
               },
                tabBarActiveTintColor: "#007AFF",
                 tabBarInactiveTintColor: "#8e8e93",
