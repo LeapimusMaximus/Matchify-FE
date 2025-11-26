@@ -47,7 +47,17 @@ export default function Home() {
       const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSongs(await res.json());
+      const topSongs = await res.json();
+      if (topSongs.items.length > 0) {
+        setSongs(topSongs);
+      } else {
+        const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const topSavedSongs = await res.json();
+        topSavedSongs.items = topSavedSongs.items.map((song) => song.track);
+        setSongs(topSavedSongs);
+      }
     })();
   }, [token]);
 
@@ -107,133 +117,134 @@ export default function Home() {
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+      <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
+        {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
-    <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
-      {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
+        {user && songs && (
+          <>
+            <Text style={{ fontSize: 22, marginBottom: 10 }}>
+              Hi, {user.display_name}!
+            </Text>
 
-      {user && songs && (
-        <>
-          <Text style={{ fontSize: 22, marginBottom: 10 }}>
-            Hi, {user.display_name}!
-          </Text>
-
-          {user.images?.[0]?.url && (
-            <Image
-              source={{ uri: user.images[0].url }}
-              style={{ width: 150, height: 150, borderRadius: 10 }}
-            />
-          )}
-
-          <Text style={{ marginTop: 20, fontWeight: "bold" }}>Top Tracks:</Text>
-
-          {songs.items?.slice(0, 5).map((track, i) => (
-            <View
-              key={i}
-              style={{
-                marginVertical: 12,
-                paddingVertical: 8,
-                borderBottomWidth: 1,
-                borderColor: "#ddd",
-              }}
-            >
-              <Text style={{ fontSize: 16 }}>
-                {track.name} - {track.artists[0].name}
-              </Text>
-
-              <Button
-                title="Play Preview"
-                onPress={async () => {
-                  const preview = await getDeezerPreview(
-                    track.name,
-                    track.artists[0].name
-                  );
-
-                  if (!preview) {
-                    alert("No Deezer preview available");
-                    return;
-                  }
-
-                  playTrack(preview, {
-                    title: track.name,
-                    artist: track.artists[0].name,
-                  });
-                }}
+            {user.images?.[0]?.url && (
+              <Image
+                source={{ uri: user.images[0].url }}
+                style={{ width: 150, height: 150, borderRadius: 10 }}
               />
-            </View>
-          ))}
+            )}
 
-          <Pressable
-            onPress={() => navigation.navigate("Feed")}
-            style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
-          >
-            <Text style={{ color: "white", textAlign: "center" }}>
-              Find Matches Now!
+            <Text style={{ marginTop: 20, fontWeight: "bold" }}>
+              Top Tracks:
             </Text>
-          </Pressable>
 
-          <Button
-            title="Logout"
-            onPress={async () => {
-              await logout();
-              stopTrack();
-              setUser(null);
-              setSongs(null);
-              setToken(null);
-            }}
-          />
-        </>
-      )}
+            {songs.items?.slice(0, 5).map((track, i) => (
+              <View
+                key={i}
+                style={{
+                  marginVertical: 12,
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  borderColor: "#ddd",
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>
+                  {track.name} - {track.artists[0].name}
+                </Text>
 
-      {currentTrackInfo && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: 15,
-            backgroundColor: "#201e2b",
-            borderTopWidth: 1,
-            borderColor: "#444",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {currentTrackInfo.title}
-            </Text>
-            <Text style={{ color: "#bbb", fontSize: 12 }}>
-              {currentTrackInfo.artist}
-            </Text>
-          </View>
+                <Button
+                  title="Play Preview"
+                  onPress={async () => {
+                    const preview = await getDeezerPreview(
+                      track.name,
+                      track.artists[0].name
+                    );
 
+                    if (!preview) {
+                      alert("No Deezer preview available");
+                      return;
+                    }
+
+                    playTrack(preview, {
+                      title: track.name,
+                      artist: track.artists[0].name,
+                    });
+                  }}
+                />
+              </View>
+            ))}
+
+            <Pressable
+              onPress={() => navigation.navigate("Feed")}
+              style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
+            >
+              <Text style={{ color: "white", textAlign: "center" }}>
+                Find Matches Now!
+              </Text>
+            </Pressable>
+
+            <Button
+              title="Logout"
+              onPress={async () => {
+                await logout();
+                stopTrack();
+                setUser(null);
+                setSongs(null);
+                setToken(null);
+              }}
+            />
+          </>
+        )}
+
+        {currentTrackInfo && (
           <View
             style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: 15,
+              backgroundColor: "#201e2b",
+              borderTopWidth: 1,
+              borderColor: "#444",
               flexDirection: "row",
               alignItems: "center",
-              gap: 20,
+              justifyContent: "space-between",
             }}
           >
-            <TouchableOpacity
-              onPress={isPlaying ? pauseTrack : resumeTrack}
-              style={{ padding: 10 }}
-            >
-              {isPlaying ? (
-                <Text style={{ color: "white", fontSize: 28 }}>⏸</Text>
-              ) : (
-                <Text style={{ color: "white", fontSize: 28 }}>▶️</Text>
-              )}
-            </TouchableOpacity>
+            <View>
+              <Text style={{ color: "white", fontSize: 14 }}>
+                {currentTrackInfo.title}
+              </Text>
+              <Text style={{ color: "#bbb", fontSize: 12 }}>
+                {currentTrackInfo.artist}
+              </Text>
+            </View>
 
-            <TouchableOpacity onPress={stopTrack} style={{ padding: 10 }}>
-              <Text style={{ color: "white", fontSize: 22 }}>❌</Text>
-            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 20,
+              }}
+            >
+              <TouchableOpacity
+                onPress={isPlaying ? pauseTrack : resumeTrack}
+                style={{ padding: 10 }}
+              >
+                {isPlaying ? (
+                  <Text style={{ color: "white", fontSize: 28 }}>⏸</Text>
+                ) : (
+                  <Text style={{ color: "white", fontSize: 28 }}>▶️</Text>
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={stopTrack} style={{ padding: 10 }}>
+                <Text style={{ color: "white", fontSize: 22 }}>❌</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
     </ScrollView>
   );
 }
