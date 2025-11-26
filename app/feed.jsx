@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet, Image, Button } from "react-native";
 import Users from "../mockData";
 import { Audio } from "expo-av";
+import Spacer from '../components/Spacer'
 
 const Feed = () => {
   const user = Users[0];
@@ -13,16 +14,9 @@ const Feed = () => {
           style={styles.profileImage}
         />
       )}
-      <Text>Match with {user.displayName}?</Text>
-      <View style={styles.buttons}>
-        <View style={{ flex: 1, marginRight: 10 }}>
-          <Button title="Pass" onPress={() => {}} />
-        </View>
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <Button title="Match" onPress={() => {}} />
-        </View>
-      </View>
-
+      <Spacer height={10}/>
+      <Text style={styles.title}>{user.displayName}</Text>
+      <Spacer height={30}/>
       {user.profileSongs.map((track) => {
         return (
           <View key={track.trackId} style={styles.tracksWrapper}>
@@ -38,6 +32,17 @@ const Feed = () => {
           </View>
         );
       })}
+      <Spacer height={20}/>
+      <Text>Match with {user.displayName}?</Text>
+      <Spacer height={20}/>
+      <View style={styles.buttons}>
+        <View style={{ flex: 1, marginRight: 10 }}>
+          <Button title="Pass" onPress={() => {}} />
+        </View>
+        <View style={{ flex: 1, marginLeft: 10 }}>
+          <Button title="Match" onPress={() => {}} />
+        </View>
+      </View>
     </View>
   );
 };
