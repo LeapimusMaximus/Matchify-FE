@@ -47,7 +47,17 @@ export default function Home() {
       const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSongs(await res.json());
+      const topSongs = await res.json();
+      if (topSongs.items.length > 0) {
+        setSongs(topSongs);
+      } else {
+        const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const topSavedSongs = await res.json();
+        topSavedSongs.items = topSavedSongs.items.map((song) => song.track);
+        setSongs(topSavedSongs);
+      }
     })();
   }, [token]);
 
@@ -107,15 +117,14 @@ export default function Home() {
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+      <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
+        {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
-    <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
-      {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
-
-      {user && songs && (
-        <>
-          <Text style={{ fontSize: 22, marginBottom: 10 }}>
-            Hi, {user.display_name}!
-          </Text>
+        {user && songs && (
+          <>
+            <Text style={{ fontSize: 22, marginBottom: 10 }}>
+              Hi, {user.display_name}!
+            </Text>
 
           {user.images?.[0]?.url && (
             <Image
@@ -124,17 +133,49 @@ export default function Home() {
             />
           )}
 
-          <Text style={{ marginTop: 20, fontWeight: "bold" }}>Top Tracks:</Text>
+            <Text style={{ marginTop: 20, fontWeight: "bold" }}>
+              Top Tracks:
+            </Text>
 
-          {songs.items?.slice(0, 5).map((track, i) => (
-            <View
-              key={i}
-              style={{
-                marginVertical: 12,
-                paddingVertical: 8,
-                borderBottomWidth: 1,
-                borderColor: "#ddd",
-              }}
+            {songs.items?.slice(0, 5).map((track, i) => (
+              <View
+                key={i}
+                style={{
+                  marginVertical: 12,
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  borderColor: "#ddd",
+                }}
+              >
+                <Text style={{ fontSize: 16 }}>
+                  {track.name} - {track.artists[0].name}
+                </Text>
+
+                <Button
+                  title="Play Preview"
+                  onPress={async () => {
+                    const preview = await getDeezerPreview(
+                      track.name,
+                      track.artists[0].name
+                    );
+
+                    if (!preview) {
+                      alert("No Deezer preview available");
+                      return;
+                    }
+
+                    playTrack(preview, {
+                      title: track.name,
+                      artist: track.artists[0].name,
+                    });
+                  }}
+                />
+              </View>
+            ))}
+
+            <Pressable
+              onPress={() => navigation.navigate("Feed")}
+              style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
             >
               <Image 
                 source={{uri: track.album.images[0].url}}
@@ -143,6 +184,20 @@ export default function Home() {
               <Text style={{ fontSize: 16 }}>
                 {track.name} - {track.artists[0].name}
               </Text>
+            </Pressable>
+
+            <Button
+              title="Logout"
+              onPress={async () => {
+                await logout();
+                stopTrack();
+                setUser(null);
+                setSongs(null);
+                setToken(null);
+              }}
+            />
+          </>
+        )}
 
               <Button
                 title="Play Preview"
