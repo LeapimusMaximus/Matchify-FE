@@ -5,8 +5,6 @@ import { Audio } from "expo-av";
 const Feed = () => {
   const user = Users[0];
 
-  console.log(user.profileSongs[0].albumArt);
-
   return (
     <View style={styles.container}>
       {user.profileImage && (
