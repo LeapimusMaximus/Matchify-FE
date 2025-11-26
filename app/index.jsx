@@ -106,11 +106,10 @@ export default function Home() {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
-
     <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
       {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
+      <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
       {user && songs && (
         <>
           <Text style={{ fontSize: 22, marginBottom: 10 }}>
@@ -180,9 +179,10 @@ export default function Home() {
               setSongs(null);
               setToken(null);
             }}
-          />
+            />
         </>
       )}
+      </ScrollView>
 
       {currentTrackInfo && (
         <View
@@ -234,6 +234,5 @@ export default function Home() {
         </View>
       )}
     </View>
-    </ScrollView>
   );
 }
