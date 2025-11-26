@@ -120,7 +120,7 @@ export default function Home() {
           {user.images?.[0]?.url && (
             <Image
               source={{ uri: user.images[0].url }}
-              style={{ width: 150, height: 150, borderRadius: 10 }}
+              style={{ width: 150, height: 150, borderRadius: 75 }}
             />
           )}
 
@@ -136,6 +136,10 @@ export default function Home() {
                 borderColor: "#ddd",
               }}
             >
+              <Image 
+                source={{uri: track.album.images[0].url}}
+                style={{width: 50, height: 50}}
+              />
               <Text style={{ fontSize: 16 }}>
                 {track.name} - {track.artists[0].name}
               </Text>
