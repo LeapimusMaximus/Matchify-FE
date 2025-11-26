@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme, Text, View } from "react-native";
+import { StyleSheet, useColorScheme, Image, Platform, View } from "react-native";
 import { Colors } from "../constants/Colors";
 import {
   NavigationContainer,
@@ -11,6 +11,8 @@ import Feed from "./feed";
 import Messages from "./messages";
 import Matches from "./matches";
 import Profile from "./profile";
+
+
 
 const Tab = createBottomTabNavigator();
 
@@ -26,16 +28,92 @@ const RootLayout = () => {
           <Tab.Navigator
             screenOptions={{
               headerStyle: {
-                backgroundColor: theme.navBackground,
+                backgroundColor: "#d3e7ed",
               },
               headerTintColor: theme.inverseTitle,
+
+              headerTitle: () =>(
+                <Image 
+                  source={require("../assets/matchify_logo.png")}
+                  style={{
+                    width: 170,
+                    height: 60,
+                  }}
+                    resizeMode="contain"
+                />
+                ),
+              headerTitleAlign: "center",
+                tabBarStyle: {
+                backgroundColor: "#d3e7ed",
+                borderTopWidth: 0,
+                height: 70 + (Platform.OS === "ios" ? 20 : 0),
+                paddingBottom: Platform.OS === "ios" ? 20 : 10,
+              },
+               tabBarActiveTintColor: "#007AFF",
+                tabBarInactiveTintColor: "#8e8e93",
             }}
           >
-            <Tab.Screen name="Home" component={Home} />
-            <Tab.Screen name="Feed" component={Feed} />
-            <Tab.Screen name="Messages" component={Messages} />
-            <Tab.Screen name="Matches" component={Matches} />
-            <Tab.Screen name="Profile" component={Profile} />
+            <Tab.Screen name="Home" component={Home} options={{
+              tabBarIcon: ({focused, color, size}) => (
+                <Image
+                  source={require("../assets/matchify_icon.png")}
+                  style={{
+                    width: size,
+                    height: size,
+                    resizeMode: "contain",
+                  }}
+                />
+              )
+            }}/>
+
+            <Tab.Screen name="Feed" component={Feed} options={{
+              tabBarIcon: ({focused, color, size}) => (
+                <Image
+                  source={require("../assets/matchify_icon.png")}
+                  style={{
+                    width: size,
+                    height: size,
+                    resizeMode: "contain",
+                  }}
+                />
+              )
+            }}/>
+            <Tab.Screen name="Messages" component={Messages} options={{
+              tabBarIcon: ({focused, color, size}) => (
+                <Image
+                  source={require("../assets/matchify_icon.png")}
+                  style={{
+                    width: size,
+                    height: size,
+                    resizeMode: "contain",
+                  }}
+                />
+              )
+            }}/>
+            <Tab.Screen name="Matches" component={Matches} options={{
+              tabBarIcon: ({focused, color, size}) => (
+                <Image
+                  source={require("../assets/matchify_icon.png")}
+                  style={{
+                    width: size,
+                    height: size,
+                    resizeMode: "contain",
+                  }}
+                />
+              )
+            }}/>
+            <Tab.Screen name="Profile" component={Profile} options={{
+              tabBarIcon: ({focused, color, size}) => (
+                <Image
+                  source={require("../assets/matchify_icon.png")}
+                  style={{
+                    width: size,
+                    height: size,
+                    resizeMode: "contain",
+                  }}
+                />
+              )
+            }}/>
           </Tab.Navigator>
         </NavigationContainer>
       </NavigationIndependentTree>
