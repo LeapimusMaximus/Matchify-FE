@@ -6,11 +6,11 @@ import {
   View,
   Image,
   Pressable,
-  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
 import { Audio } from "expo-av";
+import MiniPlayer from "../components/MiniPlayer";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -184,55 +184,13 @@ export default function Home() {
         </>
       )}
 
-      {currentTrackInfo && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            padding: 15,
-            backgroundColor: "#201e2b",
-            borderTopWidth: 1,
-            borderColor: "#444",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            <Text style={{ color: "white", fontSize: 14 }}>
-              {currentTrackInfo.title}
-            </Text>
-            <Text style={{ color: "#bbb", fontSize: 12 }}>
-              {currentTrackInfo.artist}
-            </Text>
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 20,
-            }}
-          >
-            <TouchableOpacity
-              onPress={isPlaying ? pauseTrack : resumeTrack}
-              style={{ padding: 10 }}
-            >
-              {isPlaying ? (
-                <Text style={{ color: "white", fontSize: 28 }}>⏸</Text>
-              ) : (
-                <Text style={{ color: "white", fontSize: 28 }}>▶️</Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={stopTrack} style={{ padding: 10 }}>
-              <Text style={{ color: "white", fontSize: 22 }}>❌</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      <MiniPlayer
+          trackInfo={currentTrackInfo}
+          isPlaying={isPlaying}
+          onPause={pauseTrack}
+          onPlay={resumeTrack}
+          onStop={stopTrack}
+        />
     </View>
     </ScrollView>
   );
