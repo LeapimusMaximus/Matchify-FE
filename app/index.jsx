@@ -1,13 +1,25 @@
 import { useState, useEffect } from "react";
-import { Button, Text, View, Image, Pressable } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import {
+  Button,
+  Text,
+  View,
+  Image,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
-import Spacer from "../components/Spacer";
+import { Audio } from "expo-av";
 
 export default function Home() {
   const [user, setUser] = useState(null);
   const [songs, setSongs] = useState(null);
   const [token, setToken] = useState(null);
+
+  const [sound, setSound] = useState(null);
+  const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
+  const [currentTrackInfo, setCurrentTrackInfo] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const navigation = useNavigation();
 
@@ -20,7 +32,6 @@ export default function Home() {
 
   useEffect(() => {
     if (!token) return;
-
     (async () => {
       const res = await fetch("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -31,7 +42,6 @@ export default function Home() {
 
   useEffect(() => {
     if (!token) return;
-
     (async () => {
       const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
         headers: { Authorization: `Bearer ${token}` },
@@ -46,8 +56,57 @@ export default function Home() {
     setToken(newToken);
   }
 
+  async function getDeezerPreview(trackName, artistName) {
+    const query = encodeURIComponent(`${trackName} ${artistName}`);
+    const res = await fetch(`https://api.deezer.com/search?q=${query}`);
+    const json = await res.json();
+    return json.data?.[0]?.preview || null;
+  }
+
+  async function playTrack(url, trackInfo) {
+    try {
+      // Stop previous audio
+      if (sound) {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+      }
+
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri: url });
+      setSound(newSound);
+      setCurrentTrackUrl(url);
+      setCurrentTrackInfo(trackInfo);
+      setIsPlaying(true);
+
+      await newSound.playAsync();
+    } catch (e) {
+      console.log("Play error:", e);
+    }
+  }
+
+  async function pauseTrack() {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  }
+
+  async function resumeTrack() {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  }
+
+  async function stopTrack() {
+    if (!sound) return;
+    await sound.stopAsync();
+    await sound.unloadAsync();
+    setSound(null);
+    setCurrentTrackUrl(null);
+    setCurrentTrackInfo(null);
+    setIsPlaying(false);
+  }
+
   return (
-    <View style={{ marginTop: 80, padding: 20 }}>
+    <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
       {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
       {user && songs && (
@@ -56,43 +115,121 @@ export default function Home() {
             Hi, {user.display_name}!
           </Text>
 
-          <Spacer height={20}/>
-
           {user.images?.[0]?.url && (
             <Image
               source={{ uri: user.images[0].url }}
-              style={{ width: 150, height: 150 }}
+              style={{ width: 150, height: 150, borderRadius: 10 }}
             />
           )}
-
-          <Spacer height={20}/>
 
           <Text style={{ marginTop: 20, fontWeight: "bold" }}>Top Tracks:</Text>
 
           {songs.items?.slice(0, 5).map((track, i) => (
-            <Text key={i}>{track.name}</Text>
-          ))}
+            <View
+              key={i}
+              style={{
+                marginVertical: 12,
+                paddingVertical: 8,
+                borderBottomWidth: 1,
+                borderColor: "#ddd",
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>
+                {track.name} - {track.artists[0].name}
+              </Text>
 
-          <Spacer />
+              <Button
+                title="Play Preview"
+                onPress={async () => {
+                  const preview = await getDeezerPreview(
+                    track.name,
+                    track.artists[0].name
+                  );
+
+                  if (!preview) {
+                    alert("No Deezer preview available");
+                    return;
+                  }
+
+                  playTrack(preview, {
+                    title: track.name,
+                    artist: track.artists[0].name,
+                  });
+                }}
+              />
+            </View>
+          ))}
 
           <Pressable
             onPress={() => navigation.navigate("Feed")}
-            style={{ padding: 10, backgroundColor: "blue" }}
+            style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
           >
-            <Text style={{ color: "white" }}>Find Matches Now!</Text>
+            <Text style={{ color: "white", textAlign: "center" }}>
+              Find Matches Now!
+            </Text>
           </Pressable>
-          <Spacer height={100}/>
 
           <Button
             title="Logout"
             onPress={async () => {
               await logout();
+              stopTrack();
               setUser(null);
               setSongs(null);
               setToken(null);
             }}
           />
         </>
+      )}
+
+      {currentTrackInfo && (
+        <View
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            padding: 15,
+            backgroundColor: "#201e2b",
+            borderTopWidth: 1,
+            borderColor: "#444",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <View>
+            <Text style={{ color: "white", fontSize: 14 }}>
+              {currentTrackInfo.title}
+            </Text>
+            <Text style={{ color: "#bbb", fontSize: 12 }}>
+              {currentTrackInfo.artist}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
+            <TouchableOpacity
+              onPress={isPlaying ? pauseTrack : resumeTrack}
+              style={{ padding: 10 }}
+            >
+              {isPlaying ? (
+                <Text style={{ color: "white", fontSize: 28 }}>⏸</Text>
+              ) : (
+                <Text style={{ color: "white", fontSize: 28 }}>▶️</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={stopTrack} style={{ padding: 10 }}>
+              <Text style={{ color: "white", fontSize: 22 }}>❌</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       )}
     </View>
   );
