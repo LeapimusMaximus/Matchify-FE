@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import {
+  ScrollView,
   Button,
   Text,
   View,
@@ -65,7 +66,6 @@ export default function Home() {
 
   async function playTrack(url, trackInfo) {
     try {
-      // Stop previous audio
       if (sound) {
         await sound.stopAsync();
         await sound.unloadAsync();
@@ -106,6 +106,8 @@ export default function Home() {
   }
 
   return (
+    <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+
     <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
       {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
@@ -232,5 +234,6 @@ export default function Home() {
         </View>
       )}
     </View>
+    </ScrollView>
   );
 }
