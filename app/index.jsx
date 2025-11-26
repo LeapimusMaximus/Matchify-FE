@@ -47,7 +47,17 @@ export default function Home() {
       const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSongs(await res.json());
+      const topSongs = await res.json();
+      if (topSongs.items.length > 0) {
+        setSongs(topSongs);
+      } else {
+        const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const topSavedSongs = await res.json();
+        topSavedSongs.items = topSavedSongs.items.map((song) => song.track);
+        setSongs(topSavedSongs);
+      }
     })();
   }, [token]);
 
