@@ -1,34 +1,86 @@
-import { Text, View, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { Text, View, StyleSheet, Image, Button } from "react-native";
+import Users from "../mockData";
+import { Audio } from "expo-av";
+import Spacer from '../components/Spacer'
 
 const Feed = () => {
+  const user = Users[0];
+
   return (
     <View style={styles.container}>
-      <Text>Feed</Text>
+      {user.profileImage && (
+        <Image
+          source={{ uri: user.profileImage }}
+          style={styles.profileImage}
+        />
+      )}
+      <Spacer height={10}/>
+      <Text style={styles.title}>{user.displayName}</Text>
+      <Spacer height={30}/>
+      {user.profileSongs.map((track) => {
+        return (
+          <View key={track.trackId} style={styles.tracksWrapper}>
+            <View style={styles.tracks}>
+              <Image
+                source={{ uri: track.albumArt }}
+                style={{ width: 50, height: 50, borderRadius: 5 }}
+              />
+              <Text style={styles.trackText}>
+                {track.trackName} - {track.artistName}
+              </Text>
+            </View>
+          </View>
+        );
+      })}
+      <Spacer height={20}/>
+      <Text>Match with {user.displayName}?</Text>
+      <Spacer height={20}/>
+      <View style={styles.buttons}>
+        <View style={{ flex: 1, marginRight: 10 }}>
+          <Button title="Pass" onPress={() => {}} />
+        </View>
+        <View style={{ flex: 1, marginLeft: 10 }}>
+          <Button title="Match" onPress={() => {}} />
+        </View>
+      </View>
     </View>
   );
 };
-
-export default Feed;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 40,
+  },
+  tracksWrapper: {
+    alignSelf: "stretch", 
+    marginVertical: 5,
+  },
+  tracks: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20, 
+  },
+  trackText: {
+    marginLeft: 10,
+    fontSize: 16,
+    flexShrink: 1,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
   },
   title: {
+    fontSize: 24,
     fontWeight: "bold",
-    fontSize: 18,
   },
-  card: {
-    backgroundColor: "#eee",
-    padding: 20,
-    borderRadius: 5,
-    boxShadow: "4px 4px rgba(0,0,0,0.1)",
-  },
-  link: {
-    marginVertical: 10,
-    borderBottomWidth: 1,
+  buttons: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
   },
 });
+
+export default Feed;

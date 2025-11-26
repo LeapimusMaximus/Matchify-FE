@@ -67,6 +67,7 @@ export async function getValidAccessToken() {
   return await getAccessToken();
 }
 
+
 export async function logout() {
   await SecureStore.deleteItemAsync("access_token");
   await SecureStore.deleteItemAsync("refresh_token");
@@ -75,7 +76,7 @@ export async function logout() {
 
 export async function login() {
   const redirectUri = AuthSession.makeRedirectUri({
-    scheme: "matchify",
+    scheme: "matchify", 
     useProxy: true,
   });
 
@@ -84,12 +85,7 @@ export async function login() {
     redirectUri,
     usePKCE: true,
     responseType: AuthSession.ResponseType.Code,
-    scopes: [
-      "user-read-email",
-      "user-read-private",
-      "user-top-read",
-      "user-library-read",
-    ],
+    scopes: ["user-read-email", "user-read-private", "user-top-read", "user-library-read"],
   });
 
   const result = await request.promptAsync(discovery);
@@ -102,10 +98,7 @@ export async function login() {
 
   const tokenResponse = await fetch(discovery.tokenEndpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
+    headers: { "Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json", },
     body: new URLSearchParams({
       client_id: clientId,
       grant_type: "authorization_code",
