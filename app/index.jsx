@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ScrollView, Button, Text, View, Image, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
 import { Audio } from "expo-av";
 import MiniPlayer from "../components/MiniPlayer";
+import { UserContext } from "../contexts/UserContext";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(UserContext);
   const [songs, setSongs] = useState(null);
   const [token, setToken] = useState(null);
 

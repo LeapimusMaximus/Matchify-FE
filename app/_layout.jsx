@@ -18,6 +18,7 @@ import Messages from "./messages";
 import Matches from "./matches";
 import Profile from "./profile";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { UserProvider } from "../contexts/UserContext";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,74 +27,73 @@ const RootLayout = () => {
   const theme = Colors[colorScheme] ?? Colors.light;
 
   return (
-    <>
+    <UserProvider>
       <SafeAreaProvider>
-      <StatusBar value="auto" />
-      <NavigationIndependentTree>
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={{
-              headerStyle: {
-                backgroundColor: "#d3e7ed",
-              },
-              headerTintColor: theme.inverseTitle,
+        <StatusBar value="auto" />
+        <NavigationIndependentTree>
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: "#d3e7ed",
+                },
+                headerTintColor: theme.inverseTitle,
 
-              headerTitle: () => (
-                <Image
-                  source={require("../assets/matchify_logo.png")}
-                  style={{
-                    width: 170,
-                    height: 60,
-                  }}
-                  resizeMode="contain"
-                />
-              ),
-              headerTitleAlign: "center",
-              tabBarStyle: {
-                backgroundColor: "#d3e7ed",
-                borderTopWidth: 0,
-                height: 70 + (Platform.OS === "ios" ? 20 : 0),
-                paddingBottom: Platform.OS === "ios" ? 20 : 10,
-              },
-              tabBarActiveTintColor: "#007AFF",
-              tabBarInactiveTintColor: "#8e8e93",
-            }}
-            
-          >
-            <Tab.Screen
-              name="Home"
-              component={Home}
-              options={{
-                tabBarIcon: ({ focused, color, size }) => (
+                headerTitle: () => (
                   <Image
-                    source={require("../assets/matchify_icon.png")}
+                    source={require("../assets/matchify_logo.png")}
                     style={{
-                      width: size,
-                      height: size,
-                      resizeMode: "contain",
+                      width: 170,
+                      height: 60,
                     }}
+                    resizeMode="contain"
                   />
                 ),
+                headerTitleAlign: "center",
+                tabBarStyle: {
+                  backgroundColor: "#d3e7ed",
+                  borderTopWidth: 0,
+                  height: 70 + (Platform.OS === "ios" ? 20 : 0),
+                  paddingBottom: Platform.OS === "ios" ? 20 : 10,
+                },
+                tabBarActiveTintColor: "#007AFF",
+                tabBarInactiveTintColor: "#8e8e93",
               }}
-            />
+            >
+              <Tab.Screen
+                name="Home"
+                component={Home}
+                options={{
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Image
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
+                    />
+                  ),
+                }}
+              />
 
-            <Tab.Screen
-              name="Feed"
-              component={Feed}
-              options={{
-                tabBarIcon: ({ focused, color, size }) => (
-                  <Image
-                    source={require("../assets/matchify_icon.png")}
-                    style={{
-                      width: size,
-                      height: size,
-                      resizeMode: "contain",
-                    }}
-                  />
-                ),
-              }}
-            />
-            {/* <Tab.Screen name="Messages" component={Messages} options={{
+              <Tab.Screen
+                name="Feed"
+                component={Feed}
+                options={{
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Image
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
+                    />
+                  ),
+                }}
+              />
+              {/* <Tab.Screen name="Messages" component={Messages} options={{
               tabBarIcon: ({focused, color, size}) => (
                 <Image
                   source={require("../assets/matchify_icon.png")}
@@ -105,23 +105,23 @@ const RootLayout = () => {
                 />
               )
             }}/> */}
-            <Tab.Screen
-              name="Matches"
-              component={Matches}
-              options={{
-                tabBarIcon: ({ focused, color, size }) => (
-                  <Image
-                    source={require("../assets/matchify_icon.png")}
-                    style={{
-                      width: size,
-                      height: size,
-                      resizeMode: "contain",
-                    }}
-                  />
-                ),
-              }}
-            />
-            {/* <Tab.Screen name="Profile" component={Profile} options={{
+              <Tab.Screen
+                name="Matches"
+                component={Matches}
+                options={{
+                  tabBarIcon: ({ focused, color, size }) => (
+                    <Image
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
+                    />
+                  ),
+                }}
+              />
+              {/* <Tab.Screen name="Profile" component={Profile} options={{
               tabBarIcon: ({focused, color, size}) => (
                 <Image
                   source={require("../assets/matchify_icon.png")}
@@ -133,11 +133,11 @@ const RootLayout = () => {
                 />
               )
             }}/> */}
-          </Tab.Navigator>
-        </NavigationContainer>
-      </NavigationIndependentTree>
+            </Tab.Navigator>
+          </NavigationContainer>
+        </NavigationIndependentTree>
       </SafeAreaProvider>
-    </>
+    </UserProvider>
   );
 };
 
