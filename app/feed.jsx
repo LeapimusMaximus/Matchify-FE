@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image, Button } from "react-native";
+import { Text, View, StyleSheet, Image, Button, ScrollView } from "react-native";
 import Users from "../mockData";
 import { Audio } from "expo-av";
 import Spacer from '../components/Spacer'
@@ -7,6 +7,7 @@ const Feed = () => {
   const user = Users[0];
 
   return (
+   <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
     <View style={styles.container}>
       {user.profileImage && (
         <Image
@@ -44,6 +45,7 @@ const Feed = () => {
         </View>
       </View>
     </View>
+   </ScrollView>
   );
 };
 
