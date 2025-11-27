@@ -1,51 +1,60 @@
-import { Text, View, StyleSheet, Image, Button, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Image,
+  Button,
+  ScrollView,
+} from "react-native";
 import Users from "../mockData";
 import { Audio } from "expo-av";
-import Spacer from '../components/Spacer'
+import Spacer from "../components/Spacer";
+
+console.log(Users);
 
 const Feed = () => {
   const user = Users[0];
 
   return (
-   <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
-    <View style={styles.container}>
-      {user.profileImage && (
-        <Image
-          source={{ uri: user.profileImage }}
-          style={styles.profileImage}
-        />
-      )}
-      <Spacer height={10}/>
-      <Text style={styles.title}>{user.displayName}</Text>
-      <Spacer height={30}/>
-      {user.profileSongs.map((track) => {
-        return (
-          <View key={track.trackId} style={styles.tracksWrapper}>
-            <View style={styles.tracks}>
-              <Image
-                source={{ uri: track.albumArt }}
-                style={{ width: 50, height: 50, borderRadius: 5 }}
-              />
-              <Text style={styles.trackText}>
-                {track.trackName} - {track.artistName}
-              </Text>
+    <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+      <View style={styles.container}>
+        {user.profileImage && (
+          <Image
+            source={{ uri: user.profileImage }}
+            style={styles.profileImage}
+          />
+        )}
+        <Spacer height={10} />
+        <Text style={styles.title}>{user.displayName}</Text>
+        <Spacer height={30} />
+        {user.profileSongs.map((track) => {
+          return (
+            <View key={track.trackId} style={styles.tracksWrapper}>
+              <View style={styles.tracks}>
+                <Image
+                  source={{ uri: track.albumArt }}
+                  style={{ width: 50, height: 50, borderRadius: 5 }}
+                />
+                <Text style={styles.trackText}>
+                  {track.trackName} - {track.artistName}
+                </Text>
+              </View>
             </View>
+          );
+        })}
+        <Spacer height={20} />
+        <Text>Match with {user.displayName}?</Text>
+        <Spacer height={20} />
+        <View style={styles.buttons}>
+          <View style={{ flex: 1, marginRight: 10 }}>
+            <Button title="Pass" onPress={() => {}} />
           </View>
-        );
-      })}
-      <Spacer height={20}/>
-      <Text>Match with {user.displayName}?</Text>
-      <Spacer height={20}/>
-      <View style={styles.buttons}>
-        <View style={{ flex: 1, marginRight: 10 }}>
-          <Button title="Pass" onPress={() => {}} />
-        </View>
-        <View style={{ flex: 1, marginLeft: 10 }}>
-          <Button title="Match" onPress={() => {}} />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Button title="Match" onPress={() => {}} />
+          </View>
         </View>
       </View>
-    </View>
-   </ScrollView>
+    </ScrollView>
   );
 };
 
@@ -56,13 +65,13 @@ const styles = StyleSheet.create({
     paddingTop: 40,
   },
   tracksWrapper: {
-    alignSelf: "stretch", 
+    alignSelf: "stretch",
     marginVertical: 5,
   },
   tracks: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20, 
+    marginHorizontal: 20,
   },
   trackText: {
     marginLeft: 10,

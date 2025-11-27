@@ -13,8 +13,7 @@ const Users = [
         trackId: "bl001",
         trackName: "Blinding Lights",
         artistName: "The Weeknd",
-        albumArt:
-          "https://i.scdn.co/image/ab67616d0000b273e1c1c1c1aaaa1111aaaa1111",
+        albumArt: "https://picsum.photos/seed/blindinglights/300",
         previewUrl:
           "https://cdns-preview-3.dzcdn.net/stream/c-3d3a1bb02fd1bb49c3.mp3",
       },
@@ -22,8 +21,7 @@ const Users = [
         trackId: "dl001",
         trackName: "Levitating",
         artistName: "Dua Lipa",
-        albumArt:
-          "https://i.scdn.co/image/ab67616d0000b27387ba569e9e22d98b5e1d4abc",
+        albumArt: "https://picsum.photos/seed/levitating/300",
         previewUrl:
           "https://cdns-preview-b.dzcdn.net/stream/c-bbbb2d99fa39e0.mp3",
       },
@@ -31,7 +29,7 @@ const Users = [
         trackId: "ol001",
         trackName: "Good 4 U",
         artistName: "Olivia Rodrigo",
-        albumArt: "https://i.scdn.co/image/ab67616d0000b2738a123aa44ef11ddea77",
+        albumArt: "https://picsum.photos/seed/good4u/300",
         previewUrl:
           "https://cdns-preview-e.dzcdn.net/stream/c-e2123123912312.mp3",
       },
@@ -39,16 +37,14 @@ const Users = [
         trackId: "tp001",
         trackName: "Teenage Dream",
         artistName: "Katy Perry",
-        albumArt:
-          "https://i.scdn.co/image/ab67616d0000b273f29aa1ef9b9f9aabc1ee11ab",
+        albumArt: "https://picsum.photos/seed/teenagedream/300",
         previewUrl: "https://cdns-preview-d.dzcdn.net/stream/c-d12abc13e.mp3",
       },
       {
         trackId: "ag001",
         trackName: "Into You",
         artistName: "Ariana Grande",
-        albumArt:
-          "https://i.scdn.co/image/ab67616d0000b273123abcf23afdeeee33211baa",
+        albumArt: "https://picsum.photos/seed/intoyou/300",
         previewUrl: "https://cdns-preview-8.dzcdn.net/stream/c-81aec320.mp3",
       },
     ],
@@ -68,8 +64,7 @@ const Users = [
         trackId: "dg002",
         trackName: "Don't Start Now",
         artistName: "Dua Lipa",
-        albumArt:
-          "https://i.scdn.co/image/ab67616d0000b273b7111dd5bb1234aaab7788ee",
+        albumArt: "https://picsum.photos/seed/dontstartnow/300",
         previewUrl: "https://cdns-preview-b.dzcdn.net/stream/c-b6712ec3.mp3",
       },
       {

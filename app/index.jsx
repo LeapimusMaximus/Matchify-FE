@@ -21,7 +21,6 @@ export default function Home() {
     (async () => {
       const t = await getValidAccessToken();
       setToken(t);
-      console.log(t);
     })();
   }, []);
 
