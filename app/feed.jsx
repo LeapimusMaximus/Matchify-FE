@@ -10,24 +10,24 @@ import { useContext, useEffect, useState } from "react";
 import { Audio } from "expo-av";
 import Spacer from "../components/Spacer";
 import { UserContext } from "../contexts/UserContext";
-import axios from "axios";
 
 const Feed = () => {
   const { user } = useContext(UserContext);
   const [otherUsers, setOtherUsers] = useState(null);
 
-  console.log(user.genres);
+  // console.log(user.genres);
 
-  useEffect(() => {
-    (async () => {
-      const res = await axios.patch(
-        "http://localhost:3000/users/feed",
-        user.genres
-      );
-      console.log(res.data);
-      setOtherUsers(res.data);
-    })();
-  }, [user]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await fetch("http://localhost:3000/users/feed", {
+  //       method: "PATCH",
+  //       body: JSON.stringify({ genres: user.genres }),
+  //     });
+  //     const response = await res.json();
+  //     console.log(response);
+  //     setOtherUsers(response);
+  //   })();
+  // }, [user]);
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
