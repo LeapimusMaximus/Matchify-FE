@@ -10,8 +10,6 @@ import Users from "../mockData";
 import { Audio } from "expo-av";
 import Spacer from "../components/Spacer";
 
-console.log(Users);
-
 const Feed = () => {
   const user = Users[0];
 
