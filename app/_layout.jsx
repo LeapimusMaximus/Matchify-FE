@@ -17,6 +17,7 @@ import Feed from "./feed";
 import Messages from "./messages";
 import Matches from "./matches";
 import Profile from "./profile";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +27,7 @@ const RootLayout = () => {
 
   return (
     <>
+      <SafeAreaProvider>
       <StatusBar value="auto" />
       <NavigationIndependentTree>
         <NavigationContainer>
@@ -56,6 +58,7 @@ const RootLayout = () => {
               tabBarActiveTintColor: "#007AFF",
               tabBarInactiveTintColor: "#8e8e93",
             }}
+            
           >
             <Tab.Screen
               name="Home"
@@ -133,6 +136,7 @@ const RootLayout = () => {
           </Tab.Navigator>
         </NavigationContainer>
       </NavigationIndependentTree>
+      </SafeAreaProvider>
     </>
   );
 };
