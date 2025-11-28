@@ -16,7 +16,10 @@ const Feed = () => {
   const [otherUsers, setOtherUsers] = useState(null);
 
   useEffect(() => {
-    if (!Object.hasOwn(user, "genres")) return;
+    if (!user || !Object.hasOwn(user, "genres")) {
+      setOtherUsers(null);
+      return;
+    }
     (async () => {
       const res = await fetch("http://192.168.1.88:3000/users/feed", {
         method: "PUT",
@@ -61,7 +64,7 @@ const Feed = () => {
             );
           })}
         <Spacer height={20} />
-        <Text>Match with {user.displayName}?</Text>
+        <Text>Match with {otherUsers && otherUsers[0].displayName}?</Text>
         <Spacer height={20} />
         <View style={styles.buttons}>
           <View style={{ flex: 1, marginRight: 10 }}>
