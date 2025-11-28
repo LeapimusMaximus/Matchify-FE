@@ -72,9 +72,10 @@ export async function logout() {
 }
 
 export async function login() {
+  await logout();
+
   const redirectUri = AuthSession.makeRedirectUri({
-    scheme: "matchify",
-    useProxy: true,
+    useProxy: true
   });
 
   const request = new AuthSession.AuthRequest({
