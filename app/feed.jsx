@@ -10,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { Audio } from "expo-av";
 import Spacer from "../components/Spacer";
 import { UserContext } from "../contexts/UserContext";
+import backendIp from "../env";
 
 const Feed = () => {
   const { user } = useContext(UserContext);
@@ -21,7 +22,7 @@ const Feed = () => {
       return;
     }
     (async () => {
-      const res = await fetch("http://192.168.1.88:3000/users/feed", {
+      const res = await fetch(`${backendIp}/users/feed`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
