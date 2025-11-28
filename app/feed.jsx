@@ -27,10 +27,9 @@ const Feed = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ genres: user.genres }),
+        body: JSON.stringify({ genres: user.genres, spotifyId: user.id }),
       });
-      const response = await res.json();
-      setOtherUsers(response);
+      setOtherUsers(await res.json());
     })();
   }, [user]);
 
