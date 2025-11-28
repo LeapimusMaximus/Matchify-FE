@@ -15,31 +15,34 @@ const Feed = () => {
   const { user } = useContext(UserContext);
   const [otherUsers, setOtherUsers] = useState(null);
 
-  // console.log(user.genres);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await fetch("http://localhost:3000/users/feed", {
-  //       method: "PATCH",
-  //       body: JSON.stringify({ genres: user.genres }),
-  //     });
-  //     const response = await res.json();
-  //     console.log(response);
-  //     setOtherUsers(response);
-  //   })();
-  // }, [user]);
+  useEffect(() => {
+    if (!Object.hasOwn(user, "genres")) return;
+    (async () => {
+      const res = await fetch("http://192.168.1.88:3000/users/feed", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ genres: user.genres }),
+      });
+      const response = await res.json();
+      setOtherUsers(response);
+    })();
+  }, [user]);
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
       <View style={styles.container}>
-        {user.profileImage && (
+        {otherUsers && otherUsers[0].profileImage && (
           <Image
-            source={{ uri: user.profileImage }}
+            source={{ uri: otherUsers[0].profileImage }}
             style={styles.profileImage}
           />
         )}
         <Spacer height={10} />
-        <Text style={styles.title}>{user.displayName}</Text>
+        <Text style={styles.title}>
+          {otherUsers && otherUsers[0].displayName}
+        </Text>
         <Spacer height={30} />
         {otherUsers &&
           otherUsers[0].profileSongs.map((track) => {
