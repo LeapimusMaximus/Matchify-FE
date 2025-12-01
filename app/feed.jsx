@@ -34,11 +34,35 @@ const Feed = () => {
     })();
   }, [user]);
 
-  function handleMatch() {
+  async function handleMatch() {
+    const otherSpotifyId = otherUsers[currentIndex].spotifyId;
+    const res = await fetch(`${backendIp}/users/matches`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        spotifyId: user.id,
+        otherSpotifyId: otherSpotifyId,
+        isLike: true,
+      }),
+    });
     setCurrentIndex((prev) => prev + 1);
   }
 
-  function handlePass() {    
+  async function handlePass() {
+    const otherSpotifyId = otherUsers[currentIndex].spotifyId;
+    const res = await fetch(`${backendIp}/users/matches`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        spotifyId: user.id,
+        otherSpotifyId: otherSpotifyId,
+        isLike: false,
+      }),
+    });
     setCurrentIndex((prev) => prev + 1);
   }
 
@@ -47,11 +71,14 @@ const Feed = () => {
       <View style={styles.container}>
         <Text style={{ fontSize: 20, marginTop: 50 }}>No more users</Text>
         <Spacer />
-        <Button title="Refresh" onPress={() => {
-          setCurrentIndex(0)
-          setOtherUsers(null)
-          setUser({...user})}
-          }/>
+        <Button
+          title="Refresh"
+          onPress={() => {
+            setCurrentIndex(0);
+            setOtherUsers(null);
+            setUser({ ...user });
+          }}
+        />
       </View>
     );
   }
@@ -87,7 +114,9 @@ const Feed = () => {
             );
           })}
         <Spacer height={20} />
-        <Text>Match with {otherUsers && otherUsers[currentIndex].displayName}?</Text>
+        <Text>
+          Match with {otherUsers && otherUsers[currentIndex].displayName}?
+        </Text>
         <Spacer height={20} />
         <View style={styles.buttons}>
           <View style={{ flex: 1, marginRight: 10 }}>
