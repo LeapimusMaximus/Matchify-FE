@@ -110,7 +110,7 @@ export default function Home() {
     })();
   }, [songs]);
 
-  async function handleLogin() {>>>>>>> main
+  async function handleLogin() {
     await login();
     const newToken = await getValidAccessToken();
     setToken(newToken);
@@ -188,48 +188,42 @@ export default function Home() {
               Top Tracks:
             </Text>
             <Spacer height={30} />
-            
+
             {songs.items?.slice(0, 5).map((track, i) => (
               <View key={i} style={styles.tracksWrapper}>
-
                 <View style={styles.tracks}>
-
                   <Image
                     source={{ uri: track.album.images[0].url }}
                     style={{ width: 50, height: 50, borderRadius: 5 }}
                   />
 
-                
                   <Text style={styles.trackText}>
                     {track.name} - {track.artists[0].name}
                   </Text>
-                
                 </View>
-              
-          
-              <View>
-                <Button
-                  title="Play Preview"
-                  onPress={async () => {
-                    const preview = await getDeezerPreview(
-                      track.name,
-                      track.artists[0].name
-                      
-                    );
 
-                    if (!preview) {
-                      alert("No Deezer preview available");
-                      return;
-                    }
+                <View>
+                  <Button
+                    title="Play Preview"
+                    onPress={async () => {
+                      const preview = await getDeezerPreview(
+                        track.name,
+                        track.artists[0].name
+                      );
 
-                    playTrack(preview, {
-                      title: track.name,
-                      artist: track.artists[0].name,
-                    });
-                  }}
-                />
+                      if (!preview) {
+                        alert("No Deezer preview available");
+                        return;
+                      }
+
+                      playTrack(preview, {
+                        title: track.name,
+                        artist: track.artists[0].name,
+                      });
+                    }}
+                  />
                 </View>
-                </View>
+              </View>
             ))}
 
             <Pressable
@@ -302,4 +296,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 });
-
