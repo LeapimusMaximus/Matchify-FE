@@ -118,15 +118,85 @@ const Feed = () => {
         {match?.profileImage && (
           <Image
             source={{ uri: match.profileImage }}
+import backendIp from "../env";
+
+const Feed = () => {
+  const { user, setUser } = useContext(UserContext);
+  const [otherUsers, setOtherUsers] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (!user || !Object.hasOwn(user, "genres")) {
+      setOtherUsers(null);
+      return;
+    }
+    (async () => {
+      const res = await fetch(`${backendIp}/users/feed`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ genres: user.genres, spotifyId: user.id }),
+      });
+      setOtherUsers(await res.json());
+    })();
+  }, [user]);
+
+  function handleMatch() {
+    setCurrentIndex((prev) => prev + 1);
+  }
+
+  function handlePass() {    
+    setCurrentIndex((prev) => prev + 1);
+  }
+
+  if (!otherUsers || !otherUsers[currentIndex]) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 20, marginTop: 50 }}>No more users</Text>
+        <Spacer />
+        <Button title="Refresh" onPress={() => {
+          setCurrentIndex(0)
+          setOtherUsers(null)
+          setUser({...user})}
+          }/>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+      <View style={styles.container}>
+        {otherUsers && otherUsers[currentIndex].profileImage && (
+          <Image
+            source={{ uri: otherUsers[currentIndex].profileImage }}
             style={styles.profileImage}
           />
         )}
 
         <Spacer height={10} />
-        {match && <Text style={styles.title}>{match.displayName}</Text>}
+        <Text style={styles.title}>
+          {otherUsers && otherUsers[currentIndex].displayName}
+        </Text>
+        <Spacer height={30} />
+        {otherUsers &&
+          otherUsers[currentIndex].profileSongs.map((track) => {
+            return (
+              <View key={track.trackId} style={styles.tracksWrapper}>
+                <View style={styles.tracks}>
+                  <Image
+                    source={{ uri: track.albumArt }}
+                    style={{ width: 50, height: 50, borderRadius: 5 }}
+                  />
+                  <Text style={styles.trackText}>
+                    {track.trackName} - {track.artistName}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
         <Spacer height={20} />
-
-        <Text>Match with {match?.displayName}?</Text>
+        <Text>Match with {otherUsers && otherUsers[currentIndex].displayName}?</Text>
         <Spacer height={20} />
 
         {match?.profileSongs?.slice(0, 5).map((track) => (
@@ -168,10 +238,10 @@ const Feed = () => {
 
         <View style={{ flexDirection: "row", marginTop: 20 }}>
           <View style={{ flex: 1, marginRight: 10 }}>
-            <Button title="Pass" onPress={loadNextMatch} />
+            <Button title="Pass" onPress={handlePass} />
           </View>
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Button title="Match" onPress={loadNextMatch} />
+            <Button title="Match" onPress={handleMatch} />
           </View>
         </View>
       </ScrollView>
