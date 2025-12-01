@@ -13,6 +13,7 @@ import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
 import { Audio } from "expo-av";
 import MiniPlayer from "../components/MiniPlayer";
 import { UserContext } from "../contexts/UserContext";
+import backendIp from "../env";
 import Spacer from "../components/Spacer";
 
 export default function Home() {
@@ -81,10 +82,35 @@ export default function Home() {
       setUser((currUser) => {
         return { ...currUser, genres: Array.from(genres) };
       });
+
+      await fetch(`${backendIp}/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          spotifyId: user.id,
+          displayName: user.display_name,
+          email: user.email,
+          profileImage: user.images[0].url,
+          profileSongs: songs.items.map((song) => {
+            return {
+              trackId: song.id,
+              trackName: song.name,
+              artistName: song.artists[0].name,
+              albumArt: song.album.images[0].url,
+            };
+          }),
+          genres: Array.from(genres),
+          matches: [],
+          liked: [],
+          passed: [],
+        }),
+      });
     })();
   }, [songs]);
 
-  async function handleLogin() {
+  async function handleLogin() {>>>>>>> main
     await login();
     const newToken = await getValidAccessToken();
     setToken(newToken);
