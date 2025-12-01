@@ -83,6 +83,15 @@ export default function Home() {
         return { ...currUser, genres: Array.from(genres) };
       });
 
+      let userImage;
+      if (user.images[0].hasOwnProperty("url")) {
+        userImage = users.images[0].url;
+      } else {
+        userImage = `https://avatar.iran.liara.run/username?username=[${
+          user.displayName.split(" ")[0]
+        }}`;
+      }
+
       await fetch(`${backendIp}/users`, {
         method: "POST",
         headers: {
@@ -92,7 +101,7 @@ export default function Home() {
           spotifyId: user.id,
           displayName: user.display_name,
           email: user.email,
-          profileImage: user.images[0].url,
+          profileImage: userImage,
           profileSongs: songs.items.map((song) => {
             return {
               trackId: song.id,
