@@ -26,7 +26,6 @@ const Feed = () => {
     loadNextMatch();
   }, [user]);
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (sound) {
@@ -49,7 +48,6 @@ const Feed = () => {
     setMatch(selected);
   };
 
-  // ---------- Deezer Preview Fetch ----------
   const getDeezerPreview = async (trackName, artistName) => {
     try {
       const query = encodeURIComponent(`${trackName} ${artistName}`);
@@ -62,17 +60,14 @@ const Feed = () => {
     }
   };
 
-  // ---------- AUDIO PLAYER ----------
   const playTrack = async (track) => {
     try {
-      // Get track preview from Deezer
       const previewUrl = await getDeezerPreview(track.trackName, track.artistName);
       if (!previewUrl) {
         console.log("No preview available for", track.trackName);
         return;
       }
 
-      // Stop previous sound
       if (sound) {
         await sound.stopAsync();
         await sound.unloadAsync();
@@ -82,7 +77,6 @@ const Feed = () => {
       setSound(newSound);
       setCurrentTrackUrl(previewUrl);
 
-      // Normalize track info for MiniPlayer
       setCurrentTrackInfo({
         title: track.trackName,
         artist: track.artistName,
@@ -118,7 +112,6 @@ const Feed = () => {
     setIsPlaying(false);
   };
 
-  // ---------- UI ----------
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
@@ -158,7 +151,6 @@ const Feed = () => {
               {track.trackName} - {track.artistName}
             </Text>
 
-            {/* ✅ FIX: Now fetches Deezer preview dynamically */}
             <Button
               title={
                 currentTrackInfo?.title === track.trackName && isPlaying
@@ -214,39 +206,3 @@ const styles = StyleSheet.create({
 });
 
 export default Feed;
-
-
-{/* export default Feed;
-
-  //const [otherUsers, setOtherUsers] = useState(null);
-
-  // console.log(user.genres);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await fetch("http://localhost:3000/users/feed", {
-  //       method: "PATCH",
-  //       body: JSON.stringify({ genres: user.genres }),
-  //     });
-  //     const response = await res.json();
-  //     console.log(response);
-  //     setOtherUsers(response);
-  //   })();
-  // }, [user]); */}
-    
-    {/* {otherUsers &&
-      otherUsers[0].profileSongs.map((track) => {
-        return (
-          <View key={track.trackId} style={styles.tracksWrapper}>
-          <View style={styles.tracks}>
-          <Image
-          source={{ uri: track.albumArt }}
-          style={{ width: 50, height: 50, borderRadius: 5 }}
-          />
-          <Text style={styles.trackText}>
-          {track.trackName} - {track.artistName}
-          </Text>
-          </View>
-          </View>
-          );
-          })} */}
