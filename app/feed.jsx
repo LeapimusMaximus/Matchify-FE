@@ -15,6 +15,7 @@ import backendIp from "../env";
 const Feed = () => {
   const { user } = useContext(UserContext);
   const [otherUsers, setOtherUsers] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     if (!user || !Object.hasOwn(user, "genres")) {
@@ -33,22 +34,34 @@ const Feed = () => {
     })();
   }, [user]);
 
+  function handleMatch() {
+    if (!otherUsers) return;
+
+    setCurrentIndex((prev) => prev + 1);
+  }
+
+  function handlePass() {
+    if (!otherUsers) return;
+    
+    setCurrentIndex((prev) => prev + 1);
+  }
+
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
       <View style={styles.container}>
-        {otherUsers && otherUsers[0].profileImage && (
+        {otherUsers && otherUsers[currentIndex].profileImage && (
           <Image
-            source={{ uri: otherUsers[0].profileImage }}
+            source={{ uri: otherUsers[currentIndex].profileImage }}
             style={styles.profileImage}
           />
         )}
         <Spacer height={10} />
         <Text style={styles.title}>
-          {otherUsers && otherUsers[0].displayName}
+          {otherUsers && otherUsers[currentIndex].displayName}
         </Text>
         <Spacer height={30} />
         {otherUsers &&
-          otherUsers[0].profileSongs.map((track) => {
+          otherUsers[currentIndex].profileSongs.map((track) => {
             return (
               <View key={track.trackId} style={styles.tracksWrapper}>
                 <View style={styles.tracks}>
@@ -64,14 +77,14 @@ const Feed = () => {
             );
           })}
         <Spacer height={20} />
-        <Text>Match with {otherUsers && otherUsers[0].displayName}?</Text>
+        <Text>Match with {otherUsers && otherUsers[currentIndex].displayName}?</Text>
         <Spacer height={20} />
         <View style={styles.buttons}>
           <View style={{ flex: 1, marginRight: 10 }}>
-            <Button title="Pass" onPress={() => {}} />
+            <Button title="Pass" onPress={handlePass} />
           </View>
           <View style={{ flex: 1, marginLeft: 10 }}>
-            <Button title="Match" onPress={() => {}} />
+            <Button title="Match" onPress={handleMatch} />
           </View>
         </View>
       </View>
