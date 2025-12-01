@@ -69,16 +69,17 @@ export default function Home() {
     if (!token) return;
     (async () => {
       const genres = new Set();
-      for (const song of songs.items) {
-        const res = await fetch(
-          `https://api.spotify.com/v1/artists/${song.artists[0].id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const artistInfo = await res.json();
-        artistInfo.genres.forEach((genre) => genres.add(genre));
-      }
+      const artistsApiUrl = songs.items
+        .reduce((acc, item) => {
+          return (acc += item.artists[0].id + ",");
+        }, "https://api.spotify.com/v1/artists?ids=")
+        .slice(0, -1);
+      const res = await fetch(artistsApiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const artistInfo = await res.json();
+      artistInfo.genres.forEach((genre) => genres.add(genre));
+
       setUser((currUser) => {
         return { ...currUser, genres: Array.from(genres) };
       });
