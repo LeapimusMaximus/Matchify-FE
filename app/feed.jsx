@@ -13,7 +13,7 @@ import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
 
 const Feed = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [otherUsers, setOtherUsers] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -35,15 +35,25 @@ const Feed = () => {
   }, [user]);
 
   function handleMatch() {
-    if (!otherUsers) return;
-
     setCurrentIndex((prev) => prev + 1);
   }
 
-  function handlePass() {
-    if (!otherUsers) return;
-    
+  function handlePass() {    
     setCurrentIndex((prev) => prev + 1);
+  }
+
+  if (!otherUsers || !otherUsers[currentIndex]) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 20, marginTop: 50 }}>No more users</Text>
+        <Spacer />
+        <Button title="Refresh" onPress={() => {
+          setCurrentIndex(0)
+          setOtherUsers(null)
+          setUser({...user})}
+          }/>
+      </View>
+    );
   }
 
   return (
