@@ -1,11 +1,20 @@
 import { useState, useEffect, useContext } from "react";
-import { ScrollView, Button, Text, View, Image, Pressable } from "react-native";
+import {
+  ScrollView,
+  Button,
+  Text,
+  View,
+  Image,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { login, logout, getValidAccessToken } from "../auth/spotifyAuth";
 import { Audio } from "expo-av";
 import MiniPlayer from "../components/MiniPlayer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
+import Spacer from "../components/Spacer";
 
 export default function Home() {
   const { user, setUser } = useContext(UserContext);
@@ -101,7 +110,7 @@ export default function Home() {
     })();
   }, [songs]);
 
-  async function handleLogin() {
+  async function handleLogin() {>>>>>>> main
     await login();
     const newToken = await getValidAccessToken();
     setToken(newToken);
@@ -162,7 +171,9 @@ export default function Home() {
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {user && songs && (
           <>
-            <Text style={{ fontSize: 22, marginBottom: 10 }}>
+            <Text
+              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold" }}
+            >
               Hi, {user.display_name}!
             </Text>
 
@@ -176,31 +187,34 @@ export default function Home() {
             <Text style={{ marginTop: 20, fontWeight: "bold" }}>
               Top Tracks:
             </Text>
-
+            <Spacer height={30} />
+            
             {songs.items?.slice(0, 5).map((track, i) => (
-              <View
-                key={i}
-                style={{
-                  marginVertical: 12,
-                  paddingVertical: 8,
-                  borderBottomWidth: 1,
-                  borderColor: "#ddd",
-                }}
-              >
-                <Image
-                  source={{ uri: track.album.images[0].url }}
-                  style={{ width: 50, height: 50 }}
-                />
-                <Text style={{ fontSize: 16 }}>
-                  {track.name} - {track.artists[0].name}
-                </Text>
+              <View key={i} style={styles.tracksWrapper}>
 
+                <View style={styles.tracks}>
+
+                  <Image
+                    source={{ uri: track.album.images[0].url }}
+                    style={{ width: 50, height: 50, borderRadius: 5 }}
+                  />
+
+                
+                  <Text style={styles.trackText}>
+                    {track.name} - {track.artists[0].name}
+                  </Text>
+                
+                </View>
+              
+          
+              <View>
                 <Button
                   title="Play Preview"
                   onPress={async () => {
                     const preview = await getDeezerPreview(
                       track.name,
                       track.artists[0].name
+                      
                     );
 
                     if (!preview) {
@@ -214,7 +228,8 @@ export default function Home() {
                     });
                   }}
                 />
-              </View>
+                </View>
+                </View>
             ))}
 
             <Pressable
@@ -250,3 +265,41 @@ export default function Home() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    paddingTop: 40,
+  },
+  tracksWrapper: {
+    alignSelf: "stretch",
+    marginVertical: 5,
+    flexDirection: "row",
+  },
+  tracks: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 20,
+  },
+  trackText: {
+    marginLeft: 10,
+    fontSize: 16,
+    flexShrink: 1,
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  buttons: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+  },
+});
+
