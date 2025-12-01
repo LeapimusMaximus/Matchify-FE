@@ -85,11 +85,9 @@ export default function Home() {
 
       let userImage;
       if (user.images[0].hasOwnProperty("url")) {
-        userImage = users.images[0].url;
+        userImage = user.images[0].url;
       } else {
-        userImage = `https://avatar.iran.liara.run/username?username=[${
-          user.displayName.split(" ")[0]
-        }}`;
+        userImage = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
       }
 
       await fetch(`${backendIp}/users`, {
