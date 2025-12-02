@@ -5,6 +5,7 @@ import {
   Image,
   Button,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import { Audio } from "expo-av";
@@ -12,6 +13,9 @@ import Spacer from "../components/Spacer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
 import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
+import Swiper from "react-native-deck-swiper";
+
+const { width, height } = Dimensions.get('window');
 
 const Feed = () => {
   const { user, setUser } = useContext(UserContext);
@@ -51,7 +55,7 @@ const Feed = () => {
         isLike: true,
       }),
     });
-    setRefreshMatches((cur) => cur + 1);
+    // setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
 
@@ -68,9 +72,72 @@ const Feed = () => {
         isLike: false,
       }),
     });
-    setRefreshMatches((cur) => cur + 1);
+    // setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
+
+  const onSwiped = (cardIndex) => {
+    console.log("Swiped card at index:", cardIndex);
+  };
+
+  const onSwipedLeft = (cardIndex) => {
+    console.log("Disliked:", otherUsers[cardIndex].displayName);
+    handlePass();
+   
+  };
+
+  const onSwipedRight = (cardIndex) => {
+    console.log("Liked:", otherUsers[cardIndex].displayName);
+    handleMatch();
+    
+  };
+
+  const renderCard = (card, cardIndex) => {
+    console.log(cardIndex)
+    return (
+      <View style={styles.card}>
+        {card && card.profileImage && (
+          <Image
+            source={{ uri: card.profileImage }}
+            style={styles.profileImage}
+          />
+        )}
+        <Text style={styles.title}>
+          {card && card.displayName}
+        </Text>
+        <Spacer height={20} />
+        {card &&
+          card.profileSongs.map((track) => {
+            return (
+              <View key={track.trackId} style={styles.tracksWrapper}>
+                <View style={styles.tracks}>
+                  <Image
+                    source={{ uri: track.albumArt }}
+                    style={{ width: 50, height: 50, borderRadius: 5 }}
+                  />
+                  <Text style={styles.trackText}>
+                    {track.trackName} - {track.artistName}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        {/* <Spacer height={20} /> */}
+        {/* <Text>
+          Match with {card && card.displayName}?
+        </Text> */}
+        {/* <Spacer height={20} /> */}
+        {/* <View style={styles.buttons}>
+          <View style={{ flex: 1, marginRight: 10 }}>
+            <Button title="Pass" onPress={handlePass} />
+          </View>
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Button title="Match" onPress={handleMatch} />
+          </View>
+        </View> */}
+      </View>
+    );
+  };
 
   if (!otherUsers || !otherUsers[currentIndex]) {
     return (
@@ -90,50 +157,20 @@ const Feed = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
-      <View style={styles.container}>
-        {otherUsers && otherUsers[currentIndex].profileImage && (
-          <Image
-            source={{ uri: otherUsers[currentIndex].profileImage }}
-            style={styles.profileImage}
-          />
-        )}
-        <Spacer height={10} />
-        <Text style={styles.title}>
-          {otherUsers && otherUsers[currentIndex].displayName}
-        </Text>
-        <Spacer height={30} />
-        {otherUsers &&
-          otherUsers[currentIndex].profileSongs.map((track) => {
-            return (
-              <View key={track.trackId} style={styles.tracksWrapper}>
-                <View style={styles.tracks}>
-                  <Image
-                    source={{ uri: track.albumArt }}
-                    style={{ width: 50, height: 50, borderRadius: 5 }}
-                  />
-                  <Text style={styles.trackText}>
-                    {track.trackName} - {track.artistName}
-                  </Text>
-                </View>
-              </View>
-            );
-          })}
-        <Spacer height={20} />
-        <Text>
-          Match with {otherUsers && otherUsers[currentIndex].displayName}?
-        </Text>
-        <Spacer height={20} />
-        <View style={styles.buttons}>
-          <View style={{ flex: 1, marginRight: 10 }}>
-            <Button title="Pass" onPress={handlePass} />
-          </View>
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Button title="Match" onPress={handleMatch} />
-          </View>
-        </View>
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      <Swiper
+        cards={otherUsers}
+        renderCard={renderCard}
+        onSwiped={onSwiped}
+        onSwipedLeft={onSwipedLeft}
+        onSwipedRight={onSwipedRight}
+        stackSize={1}
+        backgroundColor="#f0f0f0"
+        cardHorizontalMargin={0}
+        verticalSwipe={false} // disable vertical swipes
+        showSecondCard={true}
+      />
+    </View>
   );
 };
 
@@ -170,6 +207,17 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: "row",
     paddingHorizontal: 20,
+  },
+  card: {
+    width: width,
+    height: height - 250,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
