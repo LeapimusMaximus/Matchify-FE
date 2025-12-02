@@ -41,7 +41,15 @@ export default function Home() {
       const res = await fetch("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(await res.json());
+      const user = await res.json();
+      let userImage;
+      if (user.images[0].hasOwnProperty("url")) {
+        userImage = user.images[0].url;
+      } else {
+        userImage = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
+      }
+      user.images[0].url = userImage;
+      setUser(user);
     })();
   }, [token]);
 
@@ -85,12 +93,8 @@ export default function Home() {
       setUser((currUser) => {
         return { ...currUser, genres: Array.from(genres) };
       });
-      let userImage;
-      if (user.images[0].hasOwnProperty("url")) {
-        userImage = user.images[0].url;
-      } else {
-        userImage = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
-      }
+
+      while (user === null) {}
 
       await fetch(`${backendIp}/users`, {
         method: "POST",
@@ -101,7 +105,7 @@ export default function Home() {
           spotifyId: user.id,
           displayName: user.display_name,
           email: user.email,
-          profileImage: userImage,
+          profileImage: user.images[0],
           profileSongs: songs.items.map((song) => {
             return {
               trackId: song.id,
