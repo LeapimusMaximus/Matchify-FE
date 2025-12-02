@@ -16,6 +16,10 @@ const Matches = () => {
   const [matches, setMatches] = useState(null);
 
   useEffect(() => {
+    if (!user) {
+      setMatches(null);
+      return;
+    }
     (async () => {
       const res = await fetch(`${backendIp}/users/matches`, {
         method: "PUT",
@@ -30,26 +34,35 @@ const Matches = () => {
 
   return (
     <>
-      <View style={[styles.titleContainer, {backgroundColor: "rgba(39, 120, 160, 0.5)"}, {height: 60}, {marginBottom: 10}]}>
+      <View
+        style={[
+          styles.titleContainer,
+          { backgroundColor: "rgba(39, 120, 160, 0.5)" },
+          { height: 60 },
+          { marginBottom: 10 },
+        ]}
+      >
         <Text style={styles.title}>Your Matches</Text>
       </View>
       <ScrollView>
         <View style={styles.container}>
-            {matches &&
-              matches.map((match) => {
-                return (
-                  <View key={match._id} style={styles.threadsWrapper}>
-                    <Image
-                      src={match.profileImage}
-                      width="50"
-                      height="50"
-                      borderRadius={75}
-                    />
-                    <Text style={[{fontSize: 18}, {fontWeight: "bold"}]}>{match.displayName}</Text>
-                    <Text>{match.email}</Text>
-                  </View>
-                );
-              })}
+          {matches &&
+            matches.map((match) => {
+              return (
+                <View key={match._id} style={styles.threadsWrapper}>
+                  <Image
+                    src={match.profileImage}
+                    width="50"
+                    height="50"
+                    borderRadius={75}
+                  />
+                  <Text style={[{ fontSize: 18 }, { fontWeight: "bold" }]}>
+                    {match.displayName}
+                  </Text>
+                  <Text>{match.email}</Text>
+                </View>
+              );
+            })}
         </View>
       </ScrollView>
     </>
@@ -98,6 +111,6 @@ const styles = StyleSheet.create({
     padding: 20,
     marginRight: 20,
     alignItems: "center",
-    backgroundColor: "rgba(8, 38, 53, 0.1)"
+    backgroundColor: "rgba(8, 38, 53, 0.1)",
   },
 });
