@@ -45,7 +45,7 @@ export default function Home() {
       if (user.images.length > 0) {
         user.image = user.images[0].url;
       } else {
-        user.image = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
+        user.image = `https://avatar.iran.liara.run/username?username=${user.display_name[0]}`;
       }
       setUser(user);
     })();
