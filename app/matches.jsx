@@ -10,10 +10,14 @@ import { UserContext } from "../contexts/UserContext";
 import { useState, useEffect, useContext } from "react";
 import backendIp from "../env";
 import Spacer from "../components/Spacer";
+import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
 
 const Matches = () => {
   const { user } = useContext(UserContext);
   const [matches, setMatches] = useState(null);
+  const { refreshMatches, setRefreshMatches } = useContext(
+    RefreshMatchesContext
+  );
 
   useEffect(() => {
     if (!user) {
@@ -30,7 +34,7 @@ const Matches = () => {
       });
       setMatches(await res.json());
     })();
-  }, [user]);
+  }, [user, refreshMatches]);
 
   return (
     <>

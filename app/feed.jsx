@@ -11,9 +11,13 @@ import { Audio } from "expo-av";
 import Spacer from "../components/Spacer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
+import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
 
 const Feed = () => {
   const { user, setUser } = useContext(UserContext);
+  const { refreshMatches, setRefreshMatches } = useContext(
+    RefreshMatchesContext
+  );
   const [otherUsers, setOtherUsers] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -47,6 +51,7 @@ const Feed = () => {
         isLike: true,
       }),
     });
+    setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
 
@@ -63,6 +68,7 @@ const Feed = () => {
         isLike: false,
       }),
     });
+    setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
 
