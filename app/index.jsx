@@ -42,13 +42,11 @@ export default function Home() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const user = await res.json();
-      let userImage;
-      if (user.images[0].hasOwnProperty("url")) {
-        userImage = user.images[0].url;
+      if (user.images.length > 0) {
+        user.image = user.images[0].url;
       } else {
-        userImage = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
+        user.image = `https://avatar.iran.liara.run/username?username=${user.displayName[0]}`;
       }
-      user.images[0].url = userImage;
       setUser(user);
     })();
   }, [token]);
@@ -105,7 +103,7 @@ export default function Home() {
           spotifyId: user.id,
           displayName: user.display_name,
           email: user.email,
-          profileImage: user.images[0],
+          profileImage: user.image,
           profileSongs: songs.items.map((song) => {
             return {
               trackId: song.id,
@@ -190,9 +188,9 @@ export default function Home() {
               Hi, {user.display_name}!
             </Text>
 
-            {user.images?.[0]?.url && (
+            {user?.image && (
               <Image
-                source={{ uri: user.images[0].url }}
+                source={{ uri: user?.image }}
                 style={{ width: 150, height: 150, borderRadius: 75 }}
               />
             )}
