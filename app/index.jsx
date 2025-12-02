@@ -85,7 +85,7 @@ export default function Home() {
       });
       const { artists } = await res.json();
       artists.forEach((artist) => {
-        genres.forEach((genre) => genres.add(genre));
+        artist.genres.forEach((genre) => genres.add(genre));
       });
 
       setUser((currUser) => {
