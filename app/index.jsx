@@ -77,13 +77,14 @@ export default function Home() {
       const res = await fetch(artistsApiUrl, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const artistInfo = await res.json();
-      artistInfo.genres.forEach((genre) => genres.add(genre));
+      const { artists } = await res.json();
+      artists.forEach((artist) => {
+        genres.forEach((genre) => genres.add(genre));
+      });
 
       setUser((currUser) => {
         return { ...currUser, genres: Array.from(genres) };
       });
-
       let userImage;
       if (user.images[0].hasOwnProperty("url")) {
         userImage = user.images[0].url;
