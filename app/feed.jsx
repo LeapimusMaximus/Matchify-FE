@@ -55,7 +55,7 @@ const Feed = () => {
         isLike: true,
       }),
     });
-    // setRefreshMatches((cur) => cur + 1);
+    setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
 
@@ -83,13 +83,11 @@ const Feed = () => {
   const onSwipedLeft = (cardIndex) => {
     console.log("Disliked:", otherUsers[cardIndex].displayName);
     handlePass();
-   
   };
 
   const onSwipedRight = (cardIndex) => {
     console.log("Liked:", otherUsers[cardIndex].displayName);
     handleMatch();
-    
   };
 
   const renderCard = (card, cardIndex) => {
