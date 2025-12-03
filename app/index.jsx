@@ -182,60 +182,69 @@ export default function Home() {
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {user && songs && (
           <>
+          <View style = {styles.container}>
             <Text
-              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold" }}
+              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold", textAlign: "center" }}
             >
               Hi, {user.display_name}!
             </Text>
 
             {user?.image && (
               <Image
-                source={{ uri: user?.image }}
-                style={{ width: 150, height: 150, borderRadius: 75 }}
+              source={{ uri: user?.image }}
+              style={{ width: 150, height: 150, borderRadius: 75 }}
               />
             )}
+           
 
             <Text style={{ marginTop: 20, fontWeight: "bold" }}>
               Top Tracks:
             </Text>
+
             <Spacer height={30} />
 
-            {songs.items?.slice(0, 5).map((track, i) => (
-              <View key={i} style={styles.tracksWrapper}>
-                <View style={styles.tracks}>
-                  <Image
-                    source={{ uri: track.album.images[0].url }}
-                    style={{ width: 50, height: 50, borderRadius: 5 }}
-                  />
+{songs.items?.slice(0, 5).map((track, i) => (
+  
+  <Pressable
+    key={i}
+    style={styles.threadsWrapper}
+    onPress={async () => {
+      const preview = await getDeezerPreview(
+        track.name,
+        track.artists[0].name
+      );
 
-                  <Text style={styles.trackText}>
-                    {track.name} - {track.artists[0].name}
-                  </Text>
-                </View>
+      if (!preview) {
+        alert("No Deezer preview available");
+        return;
+      }
 
-                <View>
+      playTrack(preview, {
+        title: track.name,
+        artist: track.artists[0].name,
+      });
+    }}
+  >
+    <View style={styles.tracks}>
+      <Image
+        source={{ uri: track.album.images[0].url }}
+        style={{ width: 50, height: 50, borderRadius: 5 }}
+      />
+      <Text style={styles.trackText}>
+        {track.name} - {track.artists[0].name}
+      </Text>
+      <Text style={styles.trackText}>  ▶️</Text>
+    </View>
+  </Pressable>
+))}
+
+                {/* <View>
                   <Button
                     title="Play Preview"
-                    onPress={async () => {
-                      const preview = await getDeezerPreview(
-                        track.name,
-                        track.artists[0].name
-                      );
-
-                      if (!preview) {
-                        alert("No Deezer preview available");
-                        return;
-                      }
-
-                      playTrack(preview, {
-                        title: track.name,
-                        artist: track.artists[0].name,
-                      });
-                    }}
                   />
-                </View>
+                </View> */}
               </View>
-            ))}
+            
 
             <Pressable
               onPress={() => navigation.navigate("Feed")}
@@ -273,15 +282,15 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     paddingTop: 40,
+    justifyContent: "center",
   },
-  tracksWrapper: {
-    alignSelf: "stretch",
-    marginVertical: 5,
-    flexDirection: "row",
-  },
+  // tracksWrapper: {
+  //   alignSelf: "stretch",
+  //   marginVertical: 5,
+  //   flexDirection: "row",
+  // },
   tracks: {
     flexDirection: "row",
     alignItems: "center",
@@ -305,5 +314,22 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: "row",
     paddingHorizontal: 20,
+  },
+  card: {
+    backgroundColor: "#eee",
+    padding: 20,
+    borderRadius: 5,
+    boxShadow: "4px 4px rgba(0, 0, 0, 0.1)",
+  },
+  threadsWrapper: {
+    alignSelf: "stretch",
+    marginVertical: 5,
+    borderStyle: "solid",
+    borderColor: "#000",
+    borderRadius: 30,
+    padding: 20,
+    marginRight: 20,
+    alignItems: "center",
+    backgroundColor: "rgba(8, 38, 53, 0.1)",
   },
 });
