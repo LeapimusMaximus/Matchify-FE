@@ -176,7 +176,7 @@ export default function Home() {
   }
 
   return (
-    <View style={{ flex: 1, paddingTop: 80, paddingHorizontal: 20 }}>
+    <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 20 }}>
       {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
 
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
@@ -330,6 +330,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginRight: 20,
     alignItems: "center",
-    backgroundColor: "rgba(8, 38, 53, 0.1)",
+    backgroundColor: "rgba(165, 210, 233, 1)",
+    opacity:0.9,
   },
 });

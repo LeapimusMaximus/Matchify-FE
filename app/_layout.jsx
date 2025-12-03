@@ -4,6 +4,7 @@ import {
   Image,
   Platform,
   View,
+  ImageBackground,
 } from "react-native";
 import { Colors } from "../constants/Colors";
 import {
@@ -24,6 +25,21 @@ import { RefreshMatchesProvider } from "../contexts/RefreshMatchesContext";
 
 const Tab = createBottomTabNavigator();
 
+const withContentBackground = (ScreenComponent) => {
+  return (props) => (
+    <ImageBackground
+      source={require("../assets/matchify_background.png")}
+      resizeMode="cover"
+      style={{ flex: 1 }}
+    >
+      <View style={{ flex: 1 }}>
+        <ScreenComponent {...props} />
+      </View>
+
+    </ImageBackground>
+  );
+};
+
 const RootLayout = () => {
   const colorScheme = useColorScheme();
   const theme = Colors[colorScheme] ?? Colors.light;
@@ -32,7 +48,7 @@ const RootLayout = () => {
     <UserProvider>
       <RefreshMatchesProvider>
         <SafeAreaProvider>
-          <StatusBar value="auto" />
+          <StatusBar style="auto" />
           <NavigationIndependentTree>
             <NavigationContainer>
               <Tab.Navigator
@@ -41,15 +57,15 @@ const RootLayout = () => {
                     backgroundColor: "#d3e7ed",
                   },
                   headerTintColor: theme.inverseTitle,
-
+                  
                   headerTitle: () => (
                     <Image
-                      source={require("../assets/matchify_logo.png")}
-                      style={{
-                        width: 170,
-                        height: 60,
-                      }}
-                      resizeMode="contain"
+                    source={require("../assets/matchify_logo.png")}
+                    style={{
+                      width: 170,
+                      height: 60,
+                    }}
+                    resizeMode="contain"
                     />
                   ),
                   headerTitleAlign: "center",
@@ -62,87 +78,90 @@ const RootLayout = () => {
                   tabBarActiveTintColor: "#007AFF",
                   tabBarInactiveTintColor: "#8e8e93",
                 }}
-              >
+                >
+                  
                 <Tab.Screen
                   name="Home"
-                  component={Home}
+                  component={withContentBackground(Home)}
                   options={{
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
-                        source={require("../assets/matchify_icon.png")}
-                        style={{
-                          width: size,
-                          height: size,
-                          resizeMode: "contain",
-                        }}
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
                       />
                     ),
                   }}
-                />
+                  />
 
                 <Tab.Screen
                   name="Feed"
-                  component={Feed}
+                  component={withContentBackground(Feed)}
                   options={{
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
-                        source={require("../assets/matchify_icon.png")}
-                        style={{
-                          width: size,
-                          height: size,
-                          resizeMode: "contain",
-                        }}
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
                       />
                     ),
                   }}
-                />
+                  />
                 {/* <Tab.Screen name="Messages" component={Messages} options={{
               tabBarIcon: ({focused, color, size}) => (
                 <Image
-                  source={require("../assets/matchify_icon.png")}
-                  style={{
-                    width: size,
-                    height: size,
-                    resizeMode: "contain",
+                source={require("../assets/matchify_icon.png")}
+                style={{
+                  width: size,
+                  height: size,
+                  resizeMode: "contain",
                   }}
-                />
-              )
-            }}/> */}
+                  />
+                  )
+                  }}/> */}
                 <Tab.Screen
                   name="Matches"
-                  component={Matches}
+                  component={withContentBackground(Matches)}
                   options={{
                     tabBarIcon: ({ focused, color, size }) => (
                       <Image
-                        source={require("../assets/matchify_icon.png")}
-                        style={{
-                          width: size,
-                          height: size,
-                          resizeMode: "contain",
-                        }}
+                      source={require("../assets/matchify_icon.png")}
+                      style={{
+                        width: size,
+                        height: size,
+                        resizeMode: "contain",
+                      }}
                       />
                     ),
                   }}
-                />
+                  />
                 {/* <Tab.Screen name="Profile" component={Profile} options={{
               tabBarIcon: ({focused, color, size}) => (
                 <Image
-                  source={require("../assets/matchify_icon.png")}
-                  style={{
-                    width: size,
-                    height: size,
-                    resizeMode: "contain",
+                source={require("../assets/matchify_icon.png")}
+                style={{
+                  width: size,
+                  height: size,
+                  resizeMode: "contain",
                   }}
-                />
-              )
-            }}/> */}
+                  />
+                  )
+                  }}/> */}
               </Tab.Navigator>
             </NavigationContainer>
           </NavigationIndependentTree>
+         
         </SafeAreaProvider>
       </RefreshMatchesProvider>
     </UserProvider>
   );
+               
 };
 
 export default RootLayout;

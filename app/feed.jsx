@@ -163,7 +163,7 @@ const Feed = () => {
         onSwipedLeft={onSwipedLeft}
         onSwipedRight={onSwipedRight}
         stackSize={1}
-        backgroundColor="#f0f0f0"
+        backgroundColor= "transparent" 
         cardHorizontalMargin={0}
         verticalSwipe={false} // disable vertical swipes
         showSecondCard={true}
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingTop: 40,
+    width:'100%' ,
   },
   tracksWrapper: {
     alignSelf: "stretch",
@@ -207,7 +208,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   card: {
-    width: width,
+    width: width - 40,
     height: height - 250,
     backgroundColor: 'white',
     borderRadius: 10,

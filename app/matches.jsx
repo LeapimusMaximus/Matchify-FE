@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginRight: 20,
     alignItems: "center",
-    backgroundColor: "rgba(8, 38, 53, 0.1)",
+    backgroundColor: "rgba(165, 210, 233, 1)",
+    opacity:0.9,
   },
 });
