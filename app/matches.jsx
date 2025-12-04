@@ -16,24 +16,36 @@ const Matches = () => {
   const { refreshMatches, setRefreshMatches } = useContext(
     RefreshMatchesContext
   );
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ error, setError ] = useState(null);
 
   useEffect(() => {
     if (!user) {
       setMatches(null);
       return;
     }
+    setIsLoading(true);
     (async () => {
-      const res = await fetch(`${backendIp}/users/matches`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ spotifyId: user.id }),
-      });
-      setMatches(await res.json());
+      try {
+        const res = await fetch(`${backendIp}/users/matches`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ spotifyId: user.id }),
+        });
+        setMatches(await res.json());
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError(err);
+        setIsLoading(false);
+      }
     })();
   }, [user, refreshMatches]);
 
+  if (error) return <Text>Something went wrong...</Text>
+  if (isLoading) return <Text>Loading...</Text>
   if (!matches) return <Text>Go and swipe!</Text>
 
   return (
