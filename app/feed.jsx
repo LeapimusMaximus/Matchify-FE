@@ -5,6 +5,7 @@ import {
   Image,
   Button,
   Dimensions,
+  Pressable
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import Spacer from "../components/Spacer";
@@ -13,8 +14,10 @@ import backendIp from "../env";
 import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
 import Swiper from "react-native-deck-swiper";
 import Spinner from "react-native-loading-spinner-overlay";
+import MiniPlayer from "../components/MiniPlayer";
+import { Audio } from "expo-av";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const Feed = () => {
   const { user, setUser } = useContext(UserContext);
@@ -23,8 +26,12 @@ const Feed = () => {
   );
   const [otherUsers, setOtherUsers] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [ isLoading, setIsLoading ] = useState(false);
-  const [ error, setError ] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [sound, setSound] = useState(null);
+  const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
+  const [currentTrackInfo, setCurrentTrackInfo] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     if (!user || !Object.hasOwn(user, "genres")) {
@@ -90,39 +97,109 @@ const Feed = () => {
             style={styles.profileImage}
           />
         )}
-        <Text style={styles.title}>
-          {card && card.displayName}
-        </Text>
+        <Text style={styles.title}>{card && card.displayName}</Text>
         <Spacer height={20} />
         {card &&
-          card.profileSongs.map((track) => {
+          card.profileSongs.map((track, i) => {
             return (
-              <View key={track.trackId} style={styles.tracksWrapper}>
-                <View style={styles.tracks}>
-                  <Image
-                    source={{ uri: track.albumArt }}
-                    style={{ width: 50, height: 50, borderRadius: 5 }}
-                  />
-                  <Text style={styles.trackText}>
-                    {track.trackName} - {track.artistName}
-                  </Text>
+              <Pressable
+                key={i}
+                onPress={async () => {
+                  const preview = await getDeezerPreview(
+                    track.trackName,
+                    track.artistName
+                  );
+                  if (!preview) {
+                    alert("No Deezer preview available");
+                    return;
+                  }
+                  playTrack(preview, {
+                    title: track.trackName,
+                    artist: track.artistName,
+                  });
+                }}
+              >
+                <View key={track.trackId} style={styles.tracksWrapper}>
+                  <View style={styles.tracks}>
+                    <Image
+                      source={{ uri: track.albumArt }}
+                      style={{ width: 50, height: 50, borderRadius: 5 }}
+                    />
+                    <Text style={styles.trackText}>
+                      {track.trackName} - {track.artistName}
+                    </Text>
+                  </View>
                 </View>
-              </View>
+              </Pressable>
             );
           })}
       </View>
     );
   };
 
-  if (error) return <Text>Something went wrong...</Text>
+  async function getDeezerPreview(trackName, artistName) {
+    try {
+      const query = encodeURIComponent(`${trackName} ${artistName}`);
+      const res = await fetch(`https://api.deezer.com/search?q=${query}`);
+      const json = await res.json();
+      return json.data?.[0]?.preview || null;
+    } catch (err) {
+      console.error(err);
+      setError(err);
+    }
+  }
+
+  async function playTrack(url, trackInfo) {
+    try {
+      if (sound) {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+      }
+
+      const { sound: newSound } = await Audio.Sound.createAsync({ uri: url });
+      setSound(newSound);
+      setCurrentTrackUrl(url);
+      setCurrentTrackInfo(trackInfo);
+      setIsPlaying(true);
+
+      await newSound.playAsync();
+    } catch (e) {
+      console.log("Play error:", e);
+      setError(e);
+    }
+  }
+
+  async function pauseTrack() {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  }
+
+  async function resumeTrack() {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  }
+
+  async function stopTrack() {
+    if (!sound) return;
+    await sound.stopAsync();
+    await sound.unloadAsync();
+    setSound(null);
+    setCurrentTrackUrl(null);
+    setCurrentTrackInfo(null);
+    setIsPlaying(false);
+  }
+
+  if (error) return <Text>Something went wrong...</Text>;
   if (isLoading) {
     return (
-       <Spinner
-          visible={isLoading}
-          textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
-        />
-    )
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
+    );
   }
 
   if (!otherUsers || !otherUsers[currentIndex]) {
@@ -150,10 +227,17 @@ const Feed = () => {
         onSwipedLeft={onSwipedLeft}
         onSwipedRight={onSwipedRight}
         stackSize={1}
-        backgroundColor= "transparent" 
+        backgroundColor="transparent"
         cardHorizontalMargin={0}
-        verticalSwipe={false} 
+        verticalSwipe={false}
         showSecondCard={true}
+      />
+       <MiniPlayer
+        trackInfo={currentTrackInfo}
+        isPlaying={isPlaying}
+        onPause={pauseTrack}
+        onPlay={resumeTrack}
+        onStop={stopTrack}
       />
     </View>
   );
@@ -164,7 +248,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingTop: 40,
-    width:'100%' ,
+    width: "100%",
   },
   tracksWrapper: {
     alignSelf: "stretch",
@@ -193,13 +277,13 @@ const styles = StyleSheet.create({
   card: {
     width: width - 40,
     height: height - 250,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

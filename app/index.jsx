@@ -15,7 +15,7 @@ import MiniPlayer from "../components/MiniPlayer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
 import Spacer from "../components/Spacer";
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from "react-native-loading-spinner-overlay";
 
 export default function Home() {
   const { user, setUser } = useContext(UserContext);
@@ -25,8 +25,8 @@ export default function Home() {
   const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
   const [currentTrackInfo, setCurrentTrackInfo] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [ isLoading, setIsLoading ] = useState(false);
-  const [ error, setError ] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const navigation = useNavigation();
 
@@ -36,8 +36,8 @@ export default function Home() {
         const t = await getValidAccessToken();
         setToken(t);
       } catch (err) {
-        console.error(err)
-        setError(err)
+        console.error(err);
+        setError(err);
       }
     })();
   }, []);
@@ -47,7 +47,7 @@ export default function Home() {
     if (!token) {
       setIsLoading(false);
       return;
-    };
+    }
     (async () => {
       try {
         const res = await fetch("https://api.spotify.com/v1/me", {
@@ -62,8 +62,8 @@ export default function Home() {
         setUser(user);
         setIsLoading(false);
       } catch (err) {
-        console.error(err)
-        setError(err)
+        console.error(err);
+        setError(err);
         setIsLoading(false);
       }
     })();
@@ -88,8 +88,8 @@ export default function Home() {
           setSongs(topSavedSongs);
         }
       } catch (err) {
-        console.error(err)
-        setError(err)
+        console.error(err);
+        setError(err);
       }
     })();
   }, [token]);
@@ -111,13 +111,13 @@ export default function Home() {
         artists.forEach((artist) => {
           artist.genres.forEach((genre) => genres.add(genre));
         });
-  
+
         setUser((currUser) => {
           return { ...currUser, genres: Array.from(genres) };
         });
-  
+
         while (user === null) {}
-  
+
         await fetch(`${backendIp}/users`, {
           method: "POST",
           headers: {
@@ -143,8 +143,8 @@ export default function Home() {
           }),
         });
       } catch (err) {
-        console.error(err)
-        setError(err)
+        console.error(err);
+        setError(err);
       }
     })();
   }, [songs]);
@@ -155,8 +155,8 @@ export default function Home() {
       const newToken = await getValidAccessToken();
       setToken(newToken);
     } catch (err) {
-      console.error(err)
-      setError(err)
+      console.error(err);
+      setError(err);
     }
   }
 
@@ -167,8 +167,8 @@ export default function Home() {
       const json = await res.json();
       return json.data?.[0]?.preview || null;
     } catch (err) {
-      console.error(err)
-      setError(err)
+      console.error(err);
+      setError(err);
     }
   }
 
@@ -214,15 +214,15 @@ export default function Home() {
     setIsPlaying(false);
   }
 
-  if (error) return <Text>Something went wrong...</Text>
+  if (error) return <Text>Something went wrong...</Text>;
   if (isLoading) {
     return (
-       <Spinner
-          visible={isLoading}
-          textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
-        />
-    )
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
+    );
   }
 
   return (
@@ -232,63 +232,65 @@ export default function Home() {
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {user && songs && (
           <>
-          <View style = {styles.container}>
-            <Text
-              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold", textAlign: "center" }}
-            >
-              Hi, {user.display_name}!
-            </Text>
+            <View style={styles.container}>
+              <Text
+                style={{
+                  fontSize: 22,
+                  marginBottom: 10,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Hi, {user.display_name}!
+              </Text>
 
-            {user?.image && (
-              <Image
-              source={{ uri: user?.image }}
-              style={{ width: 150, height: 150, borderRadius: 75 }}
-              />
-            )}
-           
+              {user?.image && (
+                <Image
+                  source={{ uri: user?.image }}
+                  style={{ width: 150, height: 150, borderRadius: 75 }}
+                />
+              )}
 
-            <Text style={{ marginTop: 20, fontWeight: "bold" }}>
-              Top Tracks:
-            </Text>
+              <Text style={{ marginTop: 20, fontWeight: "bold" }}>
+                Top Tracks:
+              </Text>
 
-            <Spacer height={30} />
+              <Spacer height={30} />
 
-{songs.items?.slice(0, 5).map((track, i) => (
-  
-  <Pressable
-    key={i}
-    style={styles.threadsWrapper}
-    onPress={async () => {
-      const preview = await getDeezerPreview(
-        track.name,
-        track.artists[0].name
-      );
+              {songs.items?.slice(0, 5).map((track, i) => (
+                <Pressable
+                  key={i}
+                  style={styles.threadsWrapper}
+                  onPress={async () => {
+                    const preview = await getDeezerPreview(
+                      track.name,
+                      track.artists[0].name
+                    );
 
-      if (!preview) {
-        alert("No Deezer preview available");
-        return;
-      }
+                    if (!preview) {
+                      alert("No Deezer preview available");
+                      return;
+                    }
 
-      playTrack(preview, {
-        title: track.name,
-        artist: track.artists[0].name,
-      });
-    }}
-  >
-    <View style={styles.tracks}>
-      <Image
-        source={{ uri: track.album.images[0].url }}
-        style={{ width: 50, height: 50, borderRadius: 5 }}
-      />
-      <Text style={styles.trackText}>
-        {track.name} - {track.artists[0].name}
-      </Text>
-      <Text style={styles.trackText}>  ▶️</Text>
-    </View>
-  </Pressable>
-))}
-              </View>
-            
+                    playTrack(preview, {
+                      title: track.name,
+                      artist: track.artists[0].name,
+                    });
+                  }}
+                >
+                  <View style={styles.tracks}>
+                    <Image
+                      source={{ uri: track.album.images[0].url }}
+                      style={{ width: 50, height: 50, borderRadius: 5 }}
+                    />
+                    <Text style={styles.trackText}>
+                      {track.name} - {track.artists[0].name}
+                    </Text>
+                    <Text style={styles.trackText}> ▶️</Text>
+                  </View>
+                </Pressable>
+              ))}
+            </View>
 
             <Pressable
               onPress={() => navigation.navigate("Feed")}
@@ -370,9 +372,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
     alignItems: "center",
     backgroundColor: "rgba(165, 210, 233, 1)",
-    opacity:1,
+    opacity: 1,
   },
   spinnerTextStyle: {
-    color: '#FFF'
+    color: "#FFF",
   },
 });
