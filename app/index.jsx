@@ -227,78 +227,130 @@ export default function Home() {
 
   return (
     <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 20 }}>
-      {!user && <Button title="Login with Spotify" onPress={handleLogin} />}
+      {!user && (
+        <Pressable
+          style={{
+            backgroundColor: "rgba(39, 120, 160, 0.95)",
+            borderWidth: 1,
+            borderRadius: 50,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderColor: "white",
+            marginTop: 20,
+            alignItems: "center",
+          }}
+          onPress={handleLogin}
+        >
+          <Text style={{ color: "white" }}>Login with Spotify</Text>
+        </Pressable>
+      )}
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: 150,
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
         {user && songs && (
-          <>
-          <View style = {styles.container}>
-            <Text
-              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold", textAlign: "center" }}
+          <View style={styles.container}>
+            <View
+              style={[
+                styles.container,
+                { minWidth: "90%", alignContent: "space-between" },
+              ]}
             >
-              Hi {user.display_name}!
-            </Text>
-              {user?.image && (
-                <Image
-                  source={{ uri: user?.image }}
-                  style={{ width: 150, height: 150, borderRadius: 75 }}
-                />
-              )}
-
-              <Text style={{ marginTop: 20, fontWeight: "bold" }}>
-                Top Tracks:
-              </Text>
+              <View
+                style={[
+                  styles.container,
+                  {
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    padding: 40,
+                    borderRadius: 30,
+                    marginTop: -40,
+                  },
+                ]}
+              >
+                <Text
+                  style={{
+                    fontSize: 22,
+                    marginBottom: 10,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  Hi {user.display_name}!
+                </Text>
+                {user?.image && (
+                  <Image
+                    source={{ uri: user?.image }}
+                    style={{ width: 150, height: 150, borderRadius: 75 }}
+                  />
+                )}
+                <Spacer height={20} />
+                <Text style={{ marginTop: 20, fontWeight: "bold" }}>
+                  Top Tracks
+                </Text>
+              </View>
 
               <Spacer height={30} />
 
-              {songs.items?.slice(0, 5).map((track, i) => (
-                <Pressable
-                  key={i}
-                  style={styles.threadsWrapper}
-                  onPress={async () => {
-                    const preview = await getDeezerPreview(
-                      track.name,
-                      track.artists[0].name
-                    );
+              <View style={{ width: "76%", alignItems: "center" }}>
+                {songs.items?.slice(0, 5).map((track, i) => (
+                  <Pressable
+                    key={i}
+                    style={[styles.threadsWrapper, { alignSelf: "stretch" }]}
+                    onPress={async () => {
+                      const preview = await getDeezerPreview(
+                        track.name,
+                        track.artists[0].name
+                      );
 
-                    if (!preview) {
-                      alert("No Deezer preview available");
-                      return;
-                    }
+                      if (!preview) {
+                        alert("No Deezer preview available");
+                        return;
+                      }
 
-      playTrack(preview, {
-        title: track.name,
-        artist: track.artists[0].name,
-      });
-    }}
-  >
-    <View style={styles.tracks}>
-      <Image
-        source={{ uri: track.album.images[0].url }}
-        style={{ width: 50, height: 50, borderRadius: 5 }}
-      />
-      <Text style={styles.trackText}>
-        {track.name} - {track.artists[0].name}
-      </Text>
-      <Text style={styles.trackText}> ▶️ </Text>
-    </View>
-  </Pressable>
-))}
+                      playTrack(preview, {
+                        title: track.name,
+                        artist: track.artists[0].name,
+                      });
+                    }}
+                  >
+                    <View style={styles.tracks}>
+                      <Image
+                        source={{ uri: track.album.images[0].url }}
+                        style={{ width: 50, height: 50, borderRadius: 5 }}
+                      />
+                      <Text style={styles.trackText}>
+                        {track.name} - {track.artists[0].name}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.trackText,
+                          { justifySelf: "flex-end", verticalAlign: "middle" },
+                        ]}
+                      >
+                        {" "}
+                        ▶️{" "}
+                      </Text>
+                    </View>
+                  </Pressable>
+                ))}
               </View>
-            <Spacer/>
+            </View>
+            <Spacer />
 
             <Pressable
-              onPress={() => navigation.navigate("Feed")}
-              style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
-            >
-              <Text style={{ color: "white", textAlign: "center" }}>
-                Find Your Matches Now!
-              </Text>
-            </Pressable>
-              <Spacer/>
-
-            <Button
-              title="Logout"
+              style={{
+                backgroundColor: "rgba(39, 120, 160, 0.95)",
+                borderWidth: 1,
+                borderRadius: 50,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                borderColor: "white",
+              }}
               onPress={async () => {
                 await logout();
                 stopTrack();
@@ -306,8 +358,10 @@ export default function Home() {
                 setSongs(null);
                 setToken(null);
               }}
-            />
-          </>
+            >
+              <Text style={{ color: "white" }}>Logout</Text>
+            </Pressable>
+          </View>
         )}
       </ScrollView>
 
@@ -331,13 +385,15 @@ const styles = StyleSheet.create({
   tracks: {
     flexDirection: "row",
     alignItems: "center",
-    marginHorizontal: 20,
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
+
   trackText: {
     marginLeft: 10,
     fontSize: 16,
     flexShrink: 1,
+    flexGrow: 2,
+    alignSelf: "center",
   },
   profileImage: {
     width: 150,
@@ -367,9 +423,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderWidth: 0.1,
     padding: 20,
-    marginRight: 20,
     alignItems: "center",
-    backgroundColor: "rgba(165, 210, 233, 1)",
+    backgroundColor: "rgba(165, 210, 233, .95)",
     opacity: 1,
   },
   spinnerTextStyle: {

@@ -5,7 +5,7 @@ import {
   Image,
   Button,
   Dimensions,
-  Pressable
+  Pressable,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
 import Spacer from "../components/Spacer";
@@ -104,6 +104,14 @@ const Feed = () => {
             return (
               <Pressable
                 key={i}
+                style={{
+                  backgroundColor: "rgba(165, 210, 233, 1)",
+                  width: "90%",
+                  borderRadius: 18,
+                  borderWidth: 0.1,
+                  padding: 2,
+                  margin: 3,
+                }}
                 onPress={async () => {
                   const preview = await getDeezerPreview(
                     track.trackName,
@@ -227,12 +235,12 @@ const Feed = () => {
         onSwipedLeft={onSwipedLeft}
         onSwipedRight={onSwipedRight}
         stackSize={1}
-        backgroundColor= "transparent" 
+        backgroundColor="transparent"
         cardHorizontalMargin={20}
-        verticalSwipe={false} 
+        verticalSwipe={false}
         showSecondCard={true}
       />
-       <MiniPlayer
+      <MiniPlayer
         trackInfo={currentTrackInfo}
         isPlaying={isPlaying}
         onPause={pauseTrack}
@@ -276,14 +284,15 @@ const styles = StyleSheet.create({
   },
   card: {
     width: width - 40,
-    height: height - 250,
-    backgroundColor: "white",
+    height: height - 280,
+    backgroundColor: "rgba(228, 243, 249, 1)",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOpacity: 0.2,
     shadowRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: -40,
   },
 });
 

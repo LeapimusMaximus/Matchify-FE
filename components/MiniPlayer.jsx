@@ -18,6 +18,7 @@ const MiniPlayer = ({ trackInfo, isPlaying, onPause, onPlay, onStop }) => {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        zIndex: 10,
       }}
     >
       <View>
@@ -26,7 +27,10 @@ const MiniPlayer = ({ trackInfo, isPlaying, onPause, onPlay, onStop }) => {
       </View>
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 20 }}>
-        <TouchableOpacity onPress={isPlaying ? onPause : onPlay} style={{ padding: 10 }}>
+        <TouchableOpacity
+          onPress={isPlaying ? onPause : onPlay}
+          style={{ padding: 10 }}
+        >
           <Text style={{ color: "white", fontSize: 28 }}>
             {isPlaying ? "⏸" : "▶️"}
           </Text>

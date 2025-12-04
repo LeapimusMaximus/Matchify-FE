@@ -1,10 +1,4 @@
-import {
-  Text,
-  View,
-  StyleSheet,
-  Image,
-  ScrollView,
-} from "react-native";
+import { Text, View, StyleSheet, Image, ScrollView } from "react-native";
 import { UserContext } from "../contexts/UserContext";
 import { useState, useEffect, useContext } from "react";
 import backendIp from "../env";
@@ -17,8 +11,8 @@ const Matches = () => {
   const { refreshMatches, setRefreshMatches } = useContext(
     RefreshMatchesContext
   );
-  const [ isLoading, setIsLoading ] = useState(false);
-  const [ error, setError ] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -45,24 +39,24 @@ const Matches = () => {
     })();
   }, [user, refreshMatches]);
 
-  if (error) return <Text>Something went wrong...</Text>
+  if (error) return <Text>Something went wrong...</Text>;
   if (isLoading) {
     return (
-       <Spinner
-          visible={isLoading}
-          textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
-        />
-    )
+      <Spinner
+        visible={isLoading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
+    );
   }
-  if (!matches) return <Text>Go and swipe!</Text>
+  if (!matches) return <Text>Go and swipe!</Text>;
 
   return (
     <>
       <View
         style={[
           styles.titleContainer,
-          { backgroundColor: "rgba(39, 120, 160, 0.5)" },
+          { backgroundColor: "rgba(39, 120, 160, 0.95)" },
           { height: 60 },
           { marginBottom: 10 },
         ]}
@@ -136,7 +130,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginRight: 20,
     alignItems: "center",
-    backgroundColor: "rgba(165, 210, 233, 1)",
-    opacity:1,
+    backgroundColor: "rgba(165, 210, 233, .95)",
+    opacity: 1,
   },
 });
