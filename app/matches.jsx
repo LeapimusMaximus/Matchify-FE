@@ -34,6 +34,8 @@ const Matches = () => {
     })();
   }, [user, refreshMatches]);
 
+  if (!matches) return <Text>Go and swipe!</Text>
+
   return (
     <>
       <View

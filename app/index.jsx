@@ -20,53 +20,50 @@ export default function Home() {
   const { user, setUser } = useContext(UserContext);
   const [songs, setSongs] = useState(null);
   const [token, setToken] = useState(null);
-
   const [sound, setSound] = useState(null);
   const [currentTrackUrl, setCurrentTrackUrl] = useState(null);
   const [currentTrackInfo, setCurrentTrackInfo] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ error, setError ] = useState(null);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
-      const t = await getValidAccessToken();
-      setToken(t);
+      try {
+        const t = await getValidAccessToken();
+        setToken(t);
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      }
     })();
   }, []);
 
   useEffect(() => {
-    if (!token) return;
+    setIsLoading(true);
+    if (!token) {
+      setIsLoading(false);
+      return;
+    };
     (async () => {
-      const res = await fetch("https://api.spotify.com/v1/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const user = await res.json();
-      if (user.images.length > 0) {
-        user.image = user.images[0].url;
-      } else {
-        user.image = `https://avatar.iran.liara.run/username?username=${user.display_name[0]}`;
-      }
-      setUser(user);
-    })();
-  }, [token]);
-
-  useEffect(() => {
-    if (!token) return;
-    (async () => {
-      const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const topSongs = await res.json();
-      if (topSongs.items.length > 0) {
-        setSongs(topSongs);
-      } else {
-        const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+      try {
+        const res = await fetch("https://api.spotify.com/v1/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const topSavedSongs = await res.json();
-        topSavedSongs.items = topSavedSongs.items.map((song) => song.track);
-        setSongs(topSavedSongs);
+        const user = await res.json();
+        if (user.images.length > 0) {
+          user.image = user.images[0].url;
+        } else {
+          user.image = `https://avatar.iran.liara.run/username?username=${user.display_name[0]}`;
+        }
+        setUser(user);
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err)
+        setError(err)
+        setIsLoading(false);
       }
     })();
   }, [token]);
@@ -74,64 +71,104 @@ export default function Home() {
   useEffect(() => {
     if (!token) return;
     (async () => {
-      const genres = new Set();
-      const artistsApiUrl = songs.items
-        .reduce((acc, item) => {
-          return (acc += item.artists[0].id + ",");
-        }, "https://api.spotify.com/v1/artists?ids=")
-        .slice(0, -1);
-      const res = await fetch(artistsApiUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const { artists } = await res.json();
-      artists.forEach((artist) => {
-        artist.genres.forEach((genre) => genres.add(genre));
-      });
+      try {
+        const res = await fetch("https://api.spotify.com/v1/me/top/tracks", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const topSongs = await res.json();
+        if (topSongs.items.length > 0) {
+          setSongs(topSongs);
+        } else {
+          const res = await fetch("https://api.spotify.com/v1/me/tracks", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const topSavedSongs = await res.json();
+          topSavedSongs.items = topSavedSongs.items.map((song) => song.track);
+          setSongs(topSavedSongs);
+        }
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      }
+    })();
+  }, [token]);
 
-      setUser((currUser) => {
-        return { ...currUser, genres: Array.from(genres) };
-      });
-
-      while (user === null) {}
-
-      await fetch(`${backendIp}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          spotifyId: user.id,
-          displayName: user.display_name,
-          email: user.email,
-          profileImage: user.image,
-          profileSongs: songs.items.map((song) => {
-            return {
-              trackId: song.id,
-              trackName: song.name,
-              artistName: song.artists[0].name,
-              albumArt: song.album.images[0].url,
-            };
+  useEffect(() => {
+    if (!token) return;
+    (async () => {
+      try {
+        const genres = new Set();
+        const artistsApiUrl = songs.items
+          .reduce((acc, item) => {
+            return (acc += item.artists[0].id + ",");
+          }, "https://api.spotify.com/v1/artists?ids=")
+          .slice(0, -1);
+        const res = await fetch(artistsApiUrl, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const { artists } = await res.json();
+        artists.forEach((artist) => {
+          artist.genres.forEach((genre) => genres.add(genre));
+        });
+  
+        setUser((currUser) => {
+          return { ...currUser, genres: Array.from(genres) };
+        });
+  
+        while (user === null) {}
+  
+        await fetch(`${backendIp}/users`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            spotifyId: user.id,
+            displayName: user.display_name,
+            email: user.email,
+            profileImage: user.image,
+            profileSongs: songs.items.map((song) => {
+              return {
+                trackId: song.id,
+                trackName: song.name,
+                artistName: song.artists[0].name,
+                albumArt: song.album.images[0].url,
+              };
+            }),
+            genres: Array.from(genres),
+            matches: [],
+            liked: [],
+            passed: [],
           }),
-          genres: Array.from(genres),
-          matches: [],
-          liked: [],
-          passed: [],
-        }),
-      });
+        });
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      }
     })();
   }, [songs]);
 
   async function handleLogin() {
-    await login();
-    const newToken = await getValidAccessToken();
-    setToken(newToken);
+    try {
+      await login();
+      const newToken = await getValidAccessToken();
+      setToken(newToken);
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    }
   }
 
   async function getDeezerPreview(trackName, artistName) {
-    const query = encodeURIComponent(`${trackName} ${artistName}`);
-    const res = await fetch(`https://api.deezer.com/search?q=${query}`);
-    const json = await res.json();
-    return json.data?.[0]?.preview || null;
+    try {
+      const query = encodeURIComponent(`${trackName} ${artistName}`);
+      const res = await fetch(`https://api.deezer.com/search?q=${query}`);
+      const json = await res.json();
+      return json.data?.[0]?.preview || null;
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    }
   }
 
   async function playTrack(url, trackInfo) {
@@ -150,6 +187,7 @@ export default function Home() {
       await newSound.playAsync();
     } catch (e) {
       console.log("Play error:", e);
+      setError(e);
     }
   }
 
@@ -174,6 +212,9 @@ export default function Home() {
     setCurrentTrackInfo(null);
     setIsPlaying(false);
   }
+
+  if (error) return <Text>Something went wrong...</Text>
+  if (isLoading) return <Text>Loading...</Text>
 
   return (
     <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 20 }}>

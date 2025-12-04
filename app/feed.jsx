@@ -22,6 +22,8 @@ const Feed = () => {
   );
   const [otherUsers, setOtherUsers] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ error, setError ] = useState(null);
 
   useEffect(() => {
     if (!user || !Object.hasOwn(user, "genres")) {
@@ -29,56 +31,53 @@ const Feed = () => {
       return;
     }
     (async () => {
-      const res = await fetch(`${backendIp}/users/feed`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ genres: user.genres, spotifyId: user.id }),
-      });
-      setOtherUsers(await res.json());
+      setIsLoading(true);
+      try {
+        const res = await fetch(`${backendIp}/users/feed`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ genres: user.genres, spotifyId: user.id }),
+        });
+        setOtherUsers(await res.json());
+        setIsLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError(err);
+        setIsLoading(false);
+      }
     })();
   }, [user]);
 
-  async function handleMatch() {
+  async function handleChoice(isLike) {
     const otherSpotifyId = otherUsers[currentIndex].spotifyId;
-    const res = await fetch(`${backendIp}/users/matches`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        spotifyId: user.id,
-        otherSpotifyId: otherSpotifyId,
-        isLike: true,
-      }),
-    });
-    setRefreshMatches((cur) => cur + 1);
-    setCurrentIndex((prev) => prev + 1);
-  }
-
-  async function handlePass() {
-    const otherSpotifyId = otherUsers[currentIndex].spotifyId;
-    const res = await fetch(`${backendIp}/users/matches`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        spotifyId: user.id,
-        otherSpotifyId: otherSpotifyId,
-        isLike: false,
-      }),
-    });
-    setCurrentIndex((prev) => prev + 1);
+    try {
+      const res = await fetch(`${backendIp}/users/matches`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          spotifyId: user.id,
+          otherSpotifyId: otherSpotifyId,
+          isLike: isLike,
+        }),
+      });
+      setRefreshMatches((cur) => cur + 1);
+      setCurrentIndex((prev) => prev + 1);
+    } catch (err) {
+      console.error(err);
+      setError(err);
+    }
   }
 
   const onSwipedLeft = (cardIndex) => {
-    handlePass();
+    handleChoice(false);
   };
 
   const onSwipedRight = (cardIndex) => {
-    handleMatch();
+    handleChoice(true);
   };
 
   const renderCard = (card, cardIndex) => {
@@ -113,6 +112,9 @@ const Feed = () => {
       </View>
     );
   };
+
+  if (error) return <Text>Something went wrong...</Text>
+  if (isLoading) return <Text>Loading...</Text>
 
   if (!otherUsers || !otherUsers[currentIndex]) {
     return (
