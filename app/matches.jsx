@@ -3,13 +3,11 @@ import {
   View,
   StyleSheet,
   Image,
-  Button,
   ScrollView,
 } from "react-native";
 import { UserContext } from "../contexts/UserContext";
 import { useState, useEffect, useContext } from "react";
 import backendIp from "../env";
-import Spacer from "../components/Spacer";
 import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
 
 const Matches = () => {
@@ -77,7 +75,6 @@ export default Matches;
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     alignItems: "stretch",
     justifyContent: "center",
     paddingStart: 20,
