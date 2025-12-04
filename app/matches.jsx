@@ -9,6 +9,7 @@ import { UserContext } from "../contexts/UserContext";
 import { useState, useEffect, useContext } from "react";
 import backendIp from "../env";
 import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const Matches = () => {
   const { user } = useContext(UserContext);
@@ -45,7 +46,15 @@ const Matches = () => {
   }, [user, refreshMatches]);
 
   if (error) return <Text>Something went wrong...</Text>
-  if (isLoading) return <Text>Loading...</Text>
+  if (isLoading) {
+    return (
+       <Spinner
+          visible={isLoading}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+    )
+  }
   if (!matches) return <Text>Go and swipe!</Text>
 
   return (

@@ -15,6 +15,7 @@ import MiniPlayer from "../components/MiniPlayer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
 import Spacer from "../components/Spacer";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Home() {
   const { user, setUser } = useContext(UserContext);
@@ -214,7 +215,15 @@ export default function Home() {
   }
 
   if (error) return <Text>Something went wrong...</Text>
-  if (isLoading) return <Text>Loading...</Text>
+  if (isLoading) {
+    return (
+       <Spinner
+          visible={isLoading}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+    )
+  }
 
   return (
     <View style={{ flex: 1, paddingTop: 0, paddingHorizontal: 20 }}>
@@ -362,5 +371,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(165, 210, 233, 1)",
     opacity:1,
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
   },
 });

@@ -12,6 +12,7 @@ import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
 import { RefreshMatchesContext } from "../contexts/RefreshMatchesContext";
 import Swiper from "react-native-deck-swiper";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const { width, height } = Dimensions.get('window');
 
@@ -114,7 +115,15 @@ const Feed = () => {
   };
 
   if (error) return <Text>Something went wrong...</Text>
-  if (isLoading) return <Text>Loading...</Text>
+  if (isLoading) {
+    return (
+       <Spinner
+          visible={isLoading}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />
+    )
+  }
 
   if (!otherUsers || !otherUsers[currentIndex]) {
     return (
