@@ -4,11 +4,9 @@ import {
   StyleSheet,
   Image,
   Button,
-  ScrollView,
   Dimensions,
 } from "react-native";
 import { useContext, useEffect, useState } from "react";
-import { Audio } from "expo-av";
 import Spacer from "../components/Spacer";
 import { UserContext } from "../contexts/UserContext";
 import backendIp from "../env";
@@ -72,13 +70,8 @@ const Feed = () => {
         isLike: false,
       }),
     });
-    // setRefreshMatches((cur) => cur + 1);
     setCurrentIndex((prev) => prev + 1);
   }
-
-  const onSwiped = (cardIndex) => {
-    console.log("Swiped card at index:", cardIndex);
-  };
 
   const onSwipedLeft = (cardIndex) => {
     console.log("Disliked:", otherUsers[cardIndex].displayName);
@@ -120,19 +113,6 @@ const Feed = () => {
               </View>
             );
           })}
-        {/* <Spacer height={20} /> */}
-        {/* <Text>
-          Match with {card && card.displayName}?
-        </Text> */}
-        {/* <Spacer height={20} /> */}
-        {/* <View style={styles.buttons}>
-          <View style={{ flex: 1, marginRight: 10 }}>
-            <Button title="Pass" onPress={handlePass} />
-          </View>
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Button title="Match" onPress={handleMatch} />
-          </View>
-        </View> */}
       </View>
     );
   };
@@ -159,13 +139,12 @@ const Feed = () => {
       <Swiper
         cards={otherUsers}
         renderCard={renderCard}
-        onSwiped={onSwiped}
         onSwipedLeft={onSwipedLeft}
         onSwipedRight={onSwipedRight}
         stackSize={1}
         backgroundColor= "transparent" 
         cardHorizontalMargin={0}
-        verticalSwipe={false} // disable vertical swipes
+        verticalSwipe={false} 
         showSecondCard={true}
       />
     </View>
@@ -202,10 +181,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-  },
-  buttons: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
   },
   card: {
     width: width - 40,
