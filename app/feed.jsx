@@ -74,17 +74,14 @@ const Feed = () => {
   }
 
   const onSwipedLeft = (cardIndex) => {
-    console.log("Disliked:", otherUsers[cardIndex].displayName);
     handlePass();
   };
 
   const onSwipedRight = (cardIndex) => {
-    console.log("Liked:", otherUsers[cardIndex].displayName);
     handleMatch();
   };
 
   const renderCard = (card, cardIndex) => {
-    console.log(cardIndex)
     return (
       <View style={styles.card}>
         {card && card.profileImage && (
