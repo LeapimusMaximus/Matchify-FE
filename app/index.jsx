@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import {
   ScrollView,
-  Button,
   Text,
   View,
   Image,

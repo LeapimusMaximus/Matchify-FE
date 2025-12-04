@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Image,
-  Button,
   Dimensions,
   Pressable,
 } from "react-native";
@@ -215,14 +214,25 @@ const Feed = () => {
       <View style={styles.container}>
         <Text style={{ fontSize: 20, marginTop: 50 }}>No more users</Text>
         <Spacer />
-        <Button
-          title="Refresh"
+        <Pressable
+        style={{
+            backgroundColor: "rgba(39, 120, 160, 0.95)",
+            borderWidth: 1,
+            borderRadius: 50,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderColor: "white",
+            marginTop: 20,
+            alignItems: "center",
+          }}
           onPress={() => {
             setCurrentIndex(0);
             setOtherUsers(null);
             setUser({ ...user });
           }}
-        />
+        >
+          <Text style={{color: "white"}}>Refresh</Text>
+        </Pressable>
       </View>
     );
   }
