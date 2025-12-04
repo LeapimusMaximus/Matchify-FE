@@ -320,6 +320,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     alignItems: "center",
     backgroundColor: "rgba(165, 210, 233, 1)",
-    opacity:0.9,
+    opacity:1,
   },
 });
