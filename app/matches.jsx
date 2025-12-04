@@ -66,9 +66,9 @@ const Matches = () => {
       <ScrollView>
         <View style={styles.container}>
           {matches &&
-            matches.map((match) => {
+            matches.map((match, i) => {
               return (
-                <View key={match._id} style={styles.threadsWrapper}>
+                <View key={i} style={styles.threadsWrapper}>
                   <Image
                     src={match.profileImage}
                     width="50"
