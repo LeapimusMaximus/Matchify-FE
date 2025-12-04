@@ -227,9 +227,9 @@ const Feed = () => {
         onSwipedLeft={onSwipedLeft}
         onSwipedRight={onSwipedRight}
         stackSize={1}
-        backgroundColor="transparent"
-        cardHorizontalMargin={0}
-        verticalSwipe={false}
+        backgroundColor= "transparent" 
+        cardHorizontalMargin={20}
+        verticalSwipe={false} 
         showSecondCard={true}
       />
        <MiniPlayer

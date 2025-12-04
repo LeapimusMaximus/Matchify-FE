@@ -232,18 +232,12 @@ export default function Home() {
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         {user && songs && (
           <>
-            <View style={styles.container}>
-              <Text
-                style={{
-                  fontSize: 22,
-                  marginBottom: 10,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Hi, {user.display_name}!
-              </Text>
-
+          <View style = {styles.container}>
+            <Text
+              style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold", textAlign: "center" }}
+            >
+              Hi {user.display_name}!
+            </Text>
               {user?.image && (
                 <Image
                   source={{ uri: user?.image }}
@@ -272,34 +266,36 @@ export default function Home() {
                       return;
                     }
 
-                    playTrack(preview, {
-                      title: track.name,
-                      artist: track.artists[0].name,
-                    });
-                  }}
-                >
-                  <View style={styles.tracks}>
-                    <Image
-                      source={{ uri: track.album.images[0].url }}
-                      style={{ width: 50, height: 50, borderRadius: 5 }}
-                    />
-                    <Text style={styles.trackText}>
-                      {track.name} - {track.artists[0].name}
-                    </Text>
-                    <Text style={styles.trackText}> ▶️</Text>
-                  </View>
-                </Pressable>
-              ))}
-            </View>
+      playTrack(preview, {
+        title: track.name,
+        artist: track.artists[0].name,
+      });
+    }}
+  >
+    <View style={styles.tracks}>
+      <Image
+        source={{ uri: track.album.images[0].url }}
+        style={{ width: 50, height: 50, borderRadius: 5 }}
+      />
+      <Text style={styles.trackText}>
+        {track.name} - {track.artists[0].name}
+      </Text>
+      <Text style={styles.trackText}> ▶️ </Text>
+    </View>
+  </Pressable>
+))}
+              </View>
+            <Spacer/>
 
             <Pressable
               onPress={() => navigation.navigate("Feed")}
               style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
             >
               <Text style={{ color: "white", textAlign: "center" }}>
-                Find Matches Now!
+                Find Your Matches Now!
               </Text>
             </Pressable>
+              <Spacer/>
 
             <Button
               title="Logout"
@@ -336,6 +332,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 20,
+    justifyContent: "center",
   },
   trackText: {
     marginLeft: 10,
@@ -368,6 +365,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#000",
     borderRadius: 30,
+    borderWidth: 0.1,
     padding: 20,
     marginRight: 20,
     alignItems: "center",
