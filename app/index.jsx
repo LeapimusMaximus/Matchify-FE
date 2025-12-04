@@ -237,12 +237,6 @@ export default function Home() {
     </View>
   </Pressable>
 ))}
-
-                {/* <View>
-                  <Button
-                    title="Play Preview"
-                  />
-                </View> */}
               </View>
             
 
@@ -286,11 +280,6 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     justifyContent: "center",
   },
-  // tracksWrapper: {
-  //   alignSelf: "stretch",
-  //   marginVertical: 5,
-  //   flexDirection: "row",
-  // },
   tracks: {
     flexDirection: "row",
     alignItems: "center",
