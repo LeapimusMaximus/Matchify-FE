@@ -151,7 +151,7 @@ const Feed = () => {
         onSwipedRight={onSwipedRight}
         stackSize={1}
         backgroundColor= "transparent" 
-        cardHorizontalMargin={0}
+        cardHorizontalMargin={20}
         verticalSwipe={false} 
         showSecondCard={true}
       />

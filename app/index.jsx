@@ -236,7 +236,7 @@ export default function Home() {
             <Text
               style={{ fontSize: 22, marginBottom: 10, fontWeight: "bold", textAlign: "center" }}
             >
-              Hi, {user.display_name}!
+              Hi {user.display_name}!
             </Text>
 
             {user?.image && (
@@ -283,21 +283,22 @@ export default function Home() {
       <Text style={styles.trackText}>
         {track.name} - {track.artists[0].name}
       </Text>
-      <Text style={styles.trackText}>  ▶️</Text>
+      <Text style={styles.trackText}> ▶️ </Text>
     </View>
   </Pressable>
 ))}
               </View>
-            
+            <Spacer/>
 
             <Pressable
               onPress={() => navigation.navigate("Feed")}
               style={{ padding: 10, backgroundColor: "blue", borderRadius: 6 }}
             >
               <Text style={{ color: "white", textAlign: "center" }}>
-                Find Matches Now!
+                Find Your Matches Now!
               </Text>
             </Pressable>
+              <Spacer/>
 
             <Button
               title="Logout"
@@ -334,6 +335,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginHorizontal: 20,
+    justifyContent: "center",
   },
   trackText: {
     marginLeft: 10,
@@ -366,6 +368,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#000",
     borderRadius: 30,
+    borderWidth: 0.1,
     padding: 20,
     marginRight: 20,
     alignItems: "center",

@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
     borderColor: "#000",
     borderRadius: 30,
+    borderWidth: 0.1,
     padding: 20,
     marginRight: 20,
     alignItems: "center",
