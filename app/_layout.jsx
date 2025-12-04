@@ -15,9 +15,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StatusBar } from "expo-status-bar";
 import Home from "./index";
 import Feed from "./feed";
-import Messages from "./messages";
 import Matches from "./matches";
-import Profile from "./profile";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { UserProvider } from "../contexts/UserContext";
 import { useState } from "react";
@@ -113,23 +111,12 @@ const RootLayout = () => {
                     ),
                   }}
                   />
-                {/* <Tab.Screen name="Messages" component={Messages} options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Image
-                source={require("../assets/matchify_icon.png")}
-                style={{
-                  width: size,
-                  height: size,
-                  resizeMode: "contain",
-                  }}
-                  />
-                  )
-                  }}/> */}
+       
                 <Tab.Screen
                   name="Matches"
                   component={withContentBackground(Matches)}
                   options={{
-                    tabBarIcon: ({ focused, color, size }) => (
+                    tabBarIcon: ({size}) => (
                       <Image
                       source={require("../assets/matchify_icon.png")}
                       style={{
@@ -141,18 +128,6 @@ const RootLayout = () => {
                     ),
                   }}
                   />
-                {/* <Tab.Screen name="Profile" component={Profile} options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Image
-                source={require("../assets/matchify_icon.png")}
-                style={{
-                  width: size,
-                  height: size,
-                  resizeMode: "contain",
-                  }}
-                  />
-                  )
-                  }}/> */}
               </Tab.Navigator>
             </NavigationContainer>
           </NavigationIndependentTree>
